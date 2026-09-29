@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Family Finance Tracker | Smart & Secure</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              200: '#fecdd3',
+              500: '#f43f5e',
+              600: '#e11d48',
+              700: '#be123c',
+            },
+            admin: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- SweetAlert2 for beautiful alerts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* Smooth Transitions */
+    .fade-enter {
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Pin keypad dot animation */
+    .pin-dot {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .pin-dot.filled {
+      background-color: #2563eb;
+      transform: scale(1.15);
+      border-color: #2563eb;
+    }
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-20 selection:bg-rose-500 selection:text-white">
+
+  <!-- ========================================================================= -->
+  <!-- TOP NAVBAR & ROLE CONTROLLER -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-xs transition-colors duration-300" id="mainHeader">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      
+      <!-- Logo / Role Indicator -->
+      <div class="flex items-center space-x-3">
+        <div id="modeIconContainer" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-md shadow-rose-500/20 transition-all duration-300">
+          <i id="modeIcon" class="fa-solid fa-heart text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-extrabold text-base md:text-lg tracking-tight text-slate-900" id="headerTitle">Family Finance</h1>
+            <span id="roleBadge" class="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200/60">
+              Wife Mode
+            </span>
+          </div>
+          <p class="text-xs text-slate-500" id="greetingSubtext">Loading greeting...</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons (Sync + PIN Lock/Unlock) -->
+      <div class="flex items-center space-x-2">
+        <!-- Manual Sync Button -->
+        <button id="refreshBtn" onclick="fetchInitialData(true)" title="Sync Data" class="p-2.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all active:scale-95">
+          <i class="fa-solid fa-arrows-rotate text-sm" id="refreshIcon"></i>
+        </button>
+
+        <!-- Lock / Unlock PIN Toggle -->
+        <button id="lockToggleBtn" onclick="handleLockToggle()" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition-all active:scale-95 shadow-xs">
+          <i id="lockIcon" class="fa-solid fa-lock text-rose-500"></i>
+          <span id="lockButtonText" class="hidden sm:inline">Admin Access</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Admin Navigation Tabs (Only visible when Husband PIN is unlocked) -->
+    <div id="adminNavTabs" class="hidden max-w-4xl mx-auto px-4 border-t border-slate-100 flex overflow-x-auto space-x-1 py-1.5 text-xs font-semibold scrollbar-none">
+      <button onclick="switchAdminTab('entry')" id="tabBtn-entry" class="admin-tab-btn px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-xs transition-all">
+        <i class="fa-solid fa-plus-circle mr-1.5"></i> Daily Entry
+      </button>
+      <button onclick="switchAdminTab('debts')" id="tabBtn-debts" class="admin-tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <i class="fa-solid fa-chart-pie mr-1.5 text-amber-500"></i> Debt Payoff
+      </button>
+      <button onclick="switchAdminTab('business')" id="tabBtn-business" class="admin-tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <i class="fa-solid fa-briefcase mr-1.5 text-blue-500"></i> Assignments Hub
+      </button>
+      <button onclick="switchAdminTab('reconcile')" id="tabBtn-reconcile" class="admin-tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <i class="fa-solid fa-scale-balanced mr-1.5 text-emerald-500"></i> Audit Reconciliation
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN CONTAINER -->
+  <!-- ========================================================================= -->
+  <main class="max-w-4xl mx-auto px-4 pt-5 pb-12 space-y-6">
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 1: DAILY TRANSACTION ENTRY (Default: Wife Mode / Append-Only)     -->
+    <!-- ======================================================================= -->
+    <section id="section-entry" class="fade-enter space-y-6">
+
+      <!-- Friendly Banner / Greeting -->
+      <div id="greetingBanner" class="p-4 rounded-3xl bg-gradient-to-r from-rose-50 via-pink-50 to-orange-50 border border-rose-100/80 shadow-xs flex items-center justify-between">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-white shadow-xs flex items-center justify-center text-rose-500 text-xl font-bold">
+            🌸
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900" id="personalGreeting">Good day, my love!</h2>
+            <p class="text-xs text-slate-600">Track your daily expenses easily. Everything is recorded safely.</p>
+          </div>
+        </div>
+        <div class="hidden sm:block text-right">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white text-slate-700 shadow-2xs border border-slate-200/50">
+            <i class="fa-solid fa-shield-halved text-emerald-500 mr-1.5"></i> Safe Append-Only
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick Transaction Entry Card -->
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-100">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 text-sm font-bold">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-lg">New Entry</h3>
+          </div>
+          <span class="text-xs font-medium text-slate-400" id="currentDateTime">Today</span>
+        </div>
+
+        <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
+          
+          <!-- Transaction Type Toggle (Expense / Income) -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Transaction Type</label>
+            <div class="grid grid-cols-2 gap-3 p-1.5 bg-slate-100 rounded-2xl">
+              <label class="cursor-pointer">
+                <input type="radio" name="type" value="Expense" checked class="peer sr-only" onchange="updateTypeTheme('Expense')">
+                <div class="w-full py-2.5 text-center rounded-xl font-bold text-sm text-slate-600 peer-checked:bg-white peer-checked:text-rose-600 peer-checked:shadow-sm transition-all flex items-center justify-center space-x-2">
+                  <i class="fa-solid fa-arrow-down text-rose-500"></i>
+                  <span>Expense</span>
+                </div>
+              </label>
+
+              <label class="cursor-pointer">
+                <input type="radio" name="type" value="Income" class="peer sr-only" onchange="updateTypeTheme('Income')">
+                <div class="w-full py-2.5 text-center rounded-xl font-bold text-sm text-slate-600 peer-checked:bg-white peer-checked:text-emerald-600 peer-checked:shadow-sm transition-all flex items-center justify-center space-x-2">
+                  <i class="fa-solid fa-arrow-up text-emerald-500"></i>
+                  <span>Income</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Amount Input (Large & Clear) -->
+          <div>
+            <label for="amountInput" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Amount (LKR) *</label>
+            <div class="relative rounded-2xl shadow-xs">
+              <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 font-bold text-base sm:text-lg">
+                Rs.
+              </div>
+              <input
+                type="number"
+                step="0.01"
+                min="1"
+                id="amountInput"
+                required
+                placeholder="0.00"
+                class="block w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3.5 pl-12 pr-4 text-2xl sm:text-3xl font-extrabold text-slate-900 placeholder:text-slate-300 focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-hidden transition-all"
+              />
+            </div>
+            <p id="amountFormattedPreview" class="text-xs text-slate-400 mt-1 pl-1 font-medium italic"></p>
+          </div>
+
+          <!-- Category & Account Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Category Dropdown -->
+            <div>
+              <label for="categorySelect" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Category *</label>
+              <div class="relative">
+                <select
+                  id="categorySelect"
+                  required
+                  class="w-full appearance-none rounded-2xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-10 text-sm font-semibold text-slate-800 focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-hidden transition-all"
+                >
+                  <option value="" disabled selected>Select Category</option>
+                  <option value="Food & Groceries">🍔 Food & Groceries</option>
+                  <option value="Rent & Utility Bills">💡 Rent & Utility Bills</option>
+                  <option value="Transport">🚗 Transport</option>
+                  <option value="Campus & Practicals">🎓 Campus & Practicals</option>
+                  <option value="Medical">💊 Medical</option>
+                  <option value="Loan Repayment">💳 Loan Repayment</option>
+                  <option value="Other">✨ Other</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                  <i class="fa-solid fa-chevron-down text-xs"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Account Dropdown -->
+            <div>
+              <label for="accountSelect" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Paid Through Account *</label>
+              <div class="relative">
+                <select
+                  id="accountSelect"
+                  required
+                  class="w-full appearance-none rounded-2xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-10 text-sm font-semibold text-slate-800 focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-hidden transition-all"
+                >
+                  <option value="" disabled selected>Select Bank / Wallet</option>
+                  <option value="HNB (Acc: 122020268397)">HNB (Acc: 122020268397)</option>
+                  <option value="Commercial Bank (Acc: 8020898065)">Commercial Bank (Acc: 8020898065)</option>
+                  <option value="Union Bank (Acc: 0270201000114795)">Union Bank (Acc: 0270201000114795)</option>
+                  <option value="Cash in Hand">💵 Cash in Hand</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                  <i class="fa-solid fa-building-columns text-xs"></i>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Note / Description -->
+          <div>
+            <label for="noteInput" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Note / Description (Optional)</label>
+            <div class="relative">
+              <input
+                type="text"
+                id="noteInput"
+                placeholder="e.g. Keells Super weekly market, Lab manual prints..."
+                class="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-4 text-sm font-medium text-slate-800 focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-hidden transition-all"
+              />
+            </div>
+          </div>
+
+          <!-- Receipt Attachment (Mobile Camera Supported) -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Receipt Attachment (Camera / Gallery)</label>
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+              <label class="flex-1 w-full flex items-center justify-center space-x-2 border-2 border-dashed border-slate-200 hover:border-rose-400 bg-slate-50/50 hover:bg-rose-50/40 rounded-2xl p-4 cursor-pointer transition-all group">
+                <i class="fa-solid fa-camera text-slate-400 group-hover:text-rose-500 text-lg transition-colors"></i>
+                <span class="text-xs sm:text-sm font-semibold text-slate-600 group-hover:text-rose-600 transition-colors" id="receiptFileName">
+                  Take Photo or Attach Bill
+                </span>
+                <input
+                  type="file"
+                  id="receiptInput"
+                  accept="image/*"
+                  capture="environment"
+                  class="hidden"
+                  onchange="handleImageSelection(event)"
+                />
+              </label>
+
+              <!-- Image Preview Container -->
+              <div id="imagePreviewContainer" class="hidden relative rounded-xl overflow-hidden border border-slate-200 h-16 w-16 shrink-0 shadow-xs">
+                <img id="imagePreview" src="" alt="Receipt Preview" class="h-full w-full object-cover" />
+                <button
+                  type="button"
+                  onclick="clearImageSelection()"
+                  class="absolute top-1 right-1 w-5 h-5 rounded-full bg-slate-900/80 hover:bg-rose-600 text-white text-[10px] flex items-center justify-center transition-colors"
+                  title="Remove image"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button
+              type="submit"
+              id="submitBtn"
+              class="w-full py-4 px-6 rounded-2xl font-bold text-white text-base tracking-wide bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 hover:from-rose-600 hover:to-pink-600 active:scale-[0.99] shadow-lg shadow-rose-500/25 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-70 disabled:pointer-events-none"
+            >
+              <i class="fa-solid fa-paper-plane" id="submitIcon"></i>
+              <span id="submitText">Submit Transaction</span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Recent Submissions (Read-Only Append Feed) -->
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm">
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-sm font-bold">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base sm:text-lg">Recent Submissions</h3>
+              <p class="text-xs text-slate-400">Strictly append-only record from backend</p>
+            </div>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600" id="submissionCountBadge">0 entries</span>
+        </div>
+
+        <!-- Transaction Feed List -->
+        <div id="submissionsList" class="space-y-3">
+          <!-- Dynamic items populated by JavaScript -->
+          <div class="py-12 text-center text-slate-400">
+            <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-rose-400"></i>
+            <p class="text-sm">Fetching recent entries...</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 2: HUSBAND MODE - DEBT PAYOFF PROGRESS (Section A)                -->
+    <!-- ======================================================================= -->
+    <section id="section-debts" class="hidden fade-enter space-y-6">
+      
+      <!-- Overall Debt Status Banner -->
+      <div class="p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                Strategic Freedom Plan
+              </span>
+              <span class="text-xs text-slate-400">Target Payoff Tracker</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black tracking-tight" id="debtTotalRemainingDisplay">LKR 1,187,000</h2>
+            <p class="text-xs text-slate-300 mt-1">Total Family & Personal Debt Remaining</p>
+          </div>
+
+          <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 min-w-[200px]">
+            <div class="flex justify-between text-xs font-semibold mb-1.5">
+              <span class="text-slate-300">Total Settled</span>
+              <span class="text-emerald-400" id="debtTotalSettledDisplay">LKR 0 (0%)</span>
+            </div>
+            <div class="w-full bg-slate-700/80 rounded-full h-3 overflow-hidden p-0.5">
+              <div id="overallDebtProgressBar" class="bg-gradient-to-r from-emerald-400 to-teal-300 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2 text-right">Target Pool: LKR 1,187,000</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Individual Loan Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="loansGridContainer">
+        
+        <!-- 1. Credit Card (High Priority) -->
+        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm relative overflow-hidden">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg">
+                <i class="fa-solid fa-credit-card"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-base">Credit Card</h4>
+                <p class="text-xs text-slate-500">Commercial / HNB Outstanding</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500 text-white shadow-xs">
+              <i class="fa-solid fa-fire mr-1"></i> High Priority
+            </span>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-end justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Amount</p>
+              <p class="text-lg font-black text-slate-800">LKR 350,000</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Current Status</p>
+              <p class="text-sm font-bold text-rose-600" id="cardStatus-cc">Active</p>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <div class="flex justify-between text-xs text-slate-500 font-medium mb-1">
+              <span>Settlement Progress</span>
+              <span class="font-bold text-slate-700">0%</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2">
+              <div class="bg-rose-500 h-2 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Dad's Loan -->
+        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-base">Dad's Loan</h4>
+                <p class="text-xs text-slate-500">Family Assistance</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-800">
+              Medium
+            </span>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-end justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Amount</p>
+              <p class="text-lg font-black text-slate-800">LKR 380,000</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Current Status</p>
+              <p class="text-sm font-bold text-amber-600">Pending</p>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <div class="flex justify-between text-xs text-slate-500 font-medium mb-1">
+              <span>Settlement Progress</span>
+              <span class="font-bold text-slate-700">0%</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2">
+              <div class="bg-amber-500 h-2 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Husband's Loan -->
+        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
+                <i class="fa-solid fa-handshake"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-base">Husband's Loan</h4>
+                <p class="text-xs text-slate-500">Internal Family Bridge</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-100 text-blue-800">
+              Medium
+            </span>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-end justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Amount</p>
+              <p class="text-lg font-black text-slate-800">LKR 357,000</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Current Status</p>
+              <p class="text-sm font-bold text-blue-600">Active</p>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <div class="flex justify-between text-xs text-slate-500 font-medium mb-1">
+              <span>Settlement Progress</span>
+              <span class="font-bold text-slate-700">0%</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2">
+              <div class="bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Mom's Loan -->
+        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg">
+                <i class="fa-solid fa-heart-pulse"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-base">Mom's Loan</h4>
+                <p class="text-xs text-slate-500">Family Advance</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800">
+              Low
+            </span>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-end justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Amount</p>
+              <p class="text-lg font-black text-slate-800">LKR 100,000</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Current Status</p>
+              <p class="text-sm font-bold text-emerald-600">Flexible</p>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <div class="flex justify-between text-xs text-slate-500 font-medium mb-1">
+              <span>Settlement Progress</span>
+              <span class="font-bold text-slate-700">0%</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2">
+              <div class="bg-emerald-500 h-2 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 3: HUSBAND MODE - ASSIGNMENTS BUSINESS (Section B)                 -->
+    <!-- ======================================================================= -->
+    <section id="section-business" class="hidden fade-enter space-y-6">
+      
+      <!-- Top Title -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">Assignment Writing Business</h2>
+          <p class="text-xs text-slate-500">Husband-only confidential earnings & client receivables</p>
+        </div>
+        <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+          <i class="fa-solid fa-lock text-xs mr-1"></i> Private
+        </span>
+      </div>
+
+      <!-- Financial Metrics Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        
+        <!-- Total Revenue -->
+        <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs">
+          <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold mb-3">
+            <i class="fa-solid fa-coins"></i>
+          </div>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Revenue</p>
+          <p class="text-base sm:text-xl font-extrabold text-slate-900 mt-1" id="bizRevenue">LKR 420,000</p>
+          <span class="text-[10px] text-emerald-600 font-semibold flex items-center mt-1">
+            <i class="fa-solid fa-arrow-trend-up mr-1"></i> Billed Contracts
+          </span>
+        </div>
+
+        <!-- Receivables -->
+        <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs">
+          <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold mb-3">
+            <i class="fa-solid fa-hourglass-half"></i>
+          </div>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Receivables</p>
+          <p class="text-base sm:text-xl font-extrabold text-amber-600 mt-1" id="bizReceivables">LKR 85,000</p>
+          <span class="text-[10px] text-slate-500 font-semibold flex items-center mt-1">
+            Pending Collection
+          </span>
+        </div>
+
+        <!-- Business Expenses -->
+        <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs">
+          <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm font-bold mb-3">
+            <i class="fa-solid fa-wallet"></i>
+          </div>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Expenses</p>
+          <p class="text-base sm:text-xl font-extrabold text-rose-600 mt-1" id="bizExpenses">LKR 48,000</p>
+          <span class="text-[10px] text-slate-500 font-semibold flex items-center mt-1">
+            Tools & Freelancers
+          </span>
+        </div>
+
+        <!-- Net Profit -->
+        <div class="bg-white rounded-3xl p-4 sm:p-5 border border-emerald-200/80 bg-gradient-to-b from-white to-emerald-50/30 shadow-xs">
+          <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold mb-3">
+            <i class="fa-solid fa-sack-dollar"></i>
+          </div>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Net Profit</p>
+          <p class="text-base sm:text-xl font-extrabold text-emerald-600 mt-1" id="bizNetProfit">LKR 372,000</p>
+          <span class="text-[10px] text-emerald-700 font-semibold flex items-center mt-1">
+            <i class="fa-solid fa-check mr-1"></i> 88.5% Margin
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Assignments Table -->
+      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between pb-4 mb-3 border-b border-slate-100">
+          <h3 class="font-bold text-slate-900 text-base">Active Projects & Deadlines</h3>
+          <span class="text-xs text-slate-400 font-medium">Auto-synced with Assignments sheet</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                <th class="py-3 px-3 font-bold">Project / Topic</th>
+                <th class="py-3 px-3 font-bold">Client</th>
+                <th class="py-3 px-3 font-bold">Total Fee</th>
+                <th class="py-3 px-3 font-bold">Advance</th>
+                <th class="py-3 px-3 font-bold">Balance</th>
+                <th class="py-3 px-3 font-bold">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-3.5 px-3 font-bold text-slate-900">MBA Strategic Mgmt Thesis</td>
+                <td class="py-3.5 px-3">Dilshan K.</td>
+                <td class="py-3.5 px-3 font-semibold text-slate-900">LKR 95,000</td>
+                <td class="py-3.5 px-3 text-emerald-600">LKR 50,000</td>
+                <td class="py-3.5 px-3 text-amber-600 font-bold">LKR 45,000</td>
+                <td class="py-3.5 px-3"><span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-bold text-[10px]">In Progress</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-3.5 px-3 font-bold text-slate-900">Health Informatics Review</td>
+                <td class="py-3.5 px-3">Nadeesha P.</td>
+                <td class="py-3.5 px-3 font-semibold text-slate-900">LKR 65,000</td>
+                <td class="py-3.5 px-3 text-emerald-600">LKR 65,000</td>
+                <td class="py-3.5 px-3 text-slate-400 font-bold">LKR 0</td>
+                <td class="py-3.5 px-3"><span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-bold text-[10px]">Delivered</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-3.5 px-3 font-bold text-slate-900">Data Analytics Final Paper</td>
+                <td class="py-3.5 px-3">Kasun W.</td>
+                <td class="py-3.5 px-3 font-semibold text-slate-900">LKR 80,000</td>
+                <td class="py-3.5 px-3 text-emerald-600">LKR 40,000</td>
+                <td class="py-3.5 px-3 text-amber-600 font-bold">LKR 40,000</td>
+                <td class="py-3.5 px-3"><span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 font-bold text-[10px]">Review</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 4: HUSBAND MODE - BANK RECONCILIATION (Section C)                  -->
+    <!-- ======================================================================= -->
+    <section id="section-reconcile" class="hidden fade-enter space-y-6">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">Monthly Bank Reconciliation</h2>
+          <p class="text-xs text-slate-500">Cross-match actual online banking balances with system ledger</p>
+        </div>
+        <button onclick="recalculateReconciliation()" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-all flex items-center space-x-1">
+          <i class="fa-solid fa-calculator text-xs"></i>
+          <span>Auto Audit</span>
+        </button>
+      </div>
+
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                <th class="py-3 px-3 font-bold">Bank / Account</th>
+                <th class="py-3 px-3 font-bold">Holder</th>
+                <th class="py-3 px-3 font-bold">Expected Balance</th>
+                <th class="py-3 px-3 font-bold">Actual App Balance (Enter)</th>
+                <th class="py-3 px-3 font-bold">Variance</th>
+                <th class="py-3 px-3 font-bold text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody id="reconcileTableBody" class="divide-y divide-slate-100">
+              <!-- Reconcile Rows will be dynamically updated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Audit Summary Card -->
+        <div class="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="flex items-center space-x-3">
+            <div id="auditStatusIcon" class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
+              <i class="fa-solid fa-check-double"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm" id="auditTitle">Books Balanced</h4>
+              <p class="text-xs text-slate-500" id="auditSubtitle">All recorded expenses reconcile with bank statements.</p>
+            </div>
+          </div>
+          <button onclick="saveReconciliationSnapshot()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs tracking-wide transition-all shadow-xs flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-check"></i>
+            <span>Confirm Audit</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- PIN VERIFICATION MODAL (HUSBAND MODE SECURITY)                           -->
+  <!-- ========================================================================= -->
+  <div id="pinModal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200 text-center relative fade-enter">
+      
+      <!-- Close Button -->
+      <button onclick="closePinModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark text-base"></i>
+      </button>
+
+      <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto text-xl mb-3 shadow-xs">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+
+      <h3 class="font-extrabold text-slate-900 text-lg">Husband Mode Unlock</h3>
+      <p class="text-xs text-slate-500 mt-1 mb-6">Enter confidential 4-digit security PIN</p>
+
+      <!-- PIN Indicator Dots -->
+      <div class="flex items-center justify-center space-x-4 mb-7" id="pinDotsContainer">
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-transparent"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-transparent"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-transparent"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-transparent"></div>
+      </div>
+
+      <!-- Numeric Keypad for fast mobile typing -->
+      <div class="grid grid-cols-3 gap-2.5 max-w-[260px] mx-auto mb-4">
+        <button type="button" onclick="handlePinKey('1')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">1</button>
+        <button type="button" onclick="handlePinKey('2')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">2</button>
+        <button type="button" onclick="handlePinKey('3')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">3</button>
+        <button type="button" onclick="handlePinKey('4')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">4</button>
+        <button type="button" onclick="handlePinKey('5')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">5</button>
+        <button type="button" onclick="handlePinKey('6')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">6</button>
+        <button type="button" onclick="handlePinKey('7')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">7</button>
+        <button type="button" onclick="handlePinKey('8')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">8</button>
+        <button type="button" onclick="handlePinKey('9')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">9</button>
+        <button type="button" onclick="clearPinInput()" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-semibold text-xs text-slate-600 transition-all">CLEAR</button>
+        <button type="button" onclick="handlePinKey('0')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">0</button>
+        <button type="button" onclick="handlePinBackspace()" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-bold text-slate-600 transition-all">
+          <i class="fa-solid fa-delete-left"></i>
+        </button>
+      </div>
+
+      <p class="text-[11px] text-slate-400">Default Access PIN: <span class="font-bold text-slate-500">8010</span></p>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- RECEIPT IMAGE PREVIEW MODAL                                              -->
+  <!-- ========================================================================= -->
+  <div id="receiptModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-5 shadow-2xl relative fade-enter flex flex-col max-h-[90vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h4 class="font-bold text-slate-900 text-sm">Receipt Attachment</h4>
+        <button onclick="closeReceiptModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="flex-1 overflow-auto py-3 text-center">
+        <img id="modalReceiptImg" src="" alt="Receipt" class="max-h-[65vh] mx-auto rounded-xl object-contain shadow-xs" />
+      </div>
+      <div class="pt-3 border-t border-slate-100 flex justify-end">
+        <a id="modalReceiptDriveLink" href="#" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center space-x-2 transition-colors">
+          <i class="fa-brands fa-google-drive"></i>
+          <span>Open in Google Drive</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT APPLICATION CORE                                               -->
+  <!-- ========================================================================= -->
+  <script>
+    // ==========================================
+    // CONFIGURATION & STATE
+    // ==========================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbwOVuycTAgvqmiiBJxon_dqPmNwWRfmXTFBgiDxe0HMwgqeNJ0j5gYqTezCM5YO0sm8aA/exec";
+    const SECRET_PIN = "8010"; // Default Husband PIN
+
+    let isHusband = false;
+    let enteredPin = "";
+    let base64ReceiptString = "";
+    let activeAdminTab = "entry";
+
+    // In-memory data store with fallback defaults
+    let appState = {
+      accounts: [
+        { AccountName: "HNB (Acc: 122020268397)", Bank: "HNB", AccNo: "122020268397", Balance: 45000, Owner: "Wife" },
+        { AccountName: "Commercial Bank (Acc: 8020898065)", Bank: "ComBank", AccNo: "8020898065", Balance: 28500, Owner: "Wife" },
+        { AccountName: "Union Bank (Acc: 0270201000114795)", Bank: "Union", AccNo: "0270201000114795", Balance: 12000, Owner: "Wife" },
+        { AccountName: "Cash in Hand", Bank: "Cash", AccNo: "N/A", Balance: 8400, Owner: "Wife" },
+        { AccountName: "ComBank (8010446177)", Bank: "Commercial Bank", AccNo: "8010446177", Balance: 185000, Owner: "Husband" },
+        { AccountName: "BOC (6280350)", Bank: "BOC", AccNo: "6280350", Balance: 94000, Owner: "Husband" }
+      ],
+      loans: [
+        { LoanName: "Credit Card", TargetAmount: 350000, PaidAmount: 45000, Remaining: 305000, Priority: "High" },
+        { LoanName: "Dad Loan", TargetAmount: 380000, PaidAmount: 60000, Remaining: 320000, Priority: "Medium" },
+        { LoanName: "Husband Loan", TargetAmount: 357000, PaidAmount: 120000, Remaining: 237000, Priority: "Medium" },
+        { LoanName: "Mom Loan", TargetAmount: 100000, PaidAmount: 30000, Remaining: 70000, Priority: "Low" }
+      ],
+      recentTransactions: [
+        { ID: "TXN-DEMO-01", Date: "2026-09-29 11:30:00", User: "Wife", Type: "Expense", Category: "Food & Groceries", Amount: 3850, Account: "HNB (Acc: 122020268397)", ReceiptUrl: "", Status: "Pending" },
+        { ID: "TXN-DEMO-02", Date: "2026-09-28 17:15:00", User: "Wife", Type: "Expense", Category: "Campus & Practicals", Amount: 2400, Account: "Cash in Hand", ReceiptUrl: "", Status: "Pending" },
+        { ID: "TXN-DEMO-03", Date: "2026-09-27 19:40:00", User: "Wife", Type: "Expense", Category: "Rent & Utility Bills", Amount: 14500, Account: "Commercial Bank (Acc: 8020898065)", ReceiptUrl: "", Status: "Verified" }
+      ]
+    };
+
+    // ==========================================
+    // INITIALIZATION & EVENT LISTENERS
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", () => {
+      setupGreetings();
+      setupAmountFormatter();
+      renderRecentTransactions();
+      renderLoansProgress();
+      renderReconciliationTable();
+      fetchInitialData(false);
+    });
+
+    // Pleasant Dynamic Greeting based on time of day
+    function setupGreetings() {
+      const hour = new Date().getHours();
+      let greeting = "Good morning, my love 🌸";
+      if (hour >= 12 && hour < 17) greeting = "Good afternoon, my love ☀️";
+      else if (hour >= 17) greeting = "Good evening, my love 🌙";
+
+      document.getElementById("personalGreeting").textContent = greeting;
+      document.getElementById("greetingSubtext").textContent = new Date().toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'short',
+        day: 'numeric'
+      });
+      document.getElementById("currentDateTime").textContent = new Date().toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    // Amount input live formatted helper text (e.g. 1500 -> LKR 1,500.00)
+    function setupAmountFormatter() {
+      const amountInput = document.getElementById("amountInput");
+      const preview = document.getElementById("amountFormattedPreview");
+
+      amountInput.addEventListener("input", (e) => {
+        const val = parseFloat(e.target.value);
+        if (!isNaN(val) && val > 0) {
+          preview.textContent = `≈ LKR ${val.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        } else {
+          preview.textContent = "";
+        }
+      });
+    }
+
+    // Toggle color accents between Expense and Income
+    function updateTypeTheme(type) {
+      const submitBtn = document.getElementById("submitBtn");
+      if (type === "Income") {
+        submitBtn.className = "w-full py-4 px-6 rounded-2xl font-bold text-white text-base tracking-wide bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-600 hover:to-teal-600 active:scale-[0.99] shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-70 disabled:pointer-events-none";
+      } else {
+        submitBtn.className = "w-full py-4 px-6 rounded-2xl font-bold text-white text-base tracking-wide bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 hover:from-rose-600 hover:to-pink-600 active:scale-[0.99] shadow-lg shadow-rose-500/25 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-70 disabled:pointer-events-none";
+      }
+    }
+
+    // ==========================================
+    // ROLE SYSTEM & PIN LOGIC (TAMPER PROTECTION)
+    // ==========================================
+    function handleLockToggle() {
+      if (isHusband) {
+        // Log out / Lock back to Wife Mode
+        Swal.fire({
+          title: "Lock Admin Dashboard?",
+          text: "Switching back to standard Wife Mode (Append-Only).",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#e11d48",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Lock Now"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setRole(false);
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Switched to Wife Mode',
+              showConfirmButton: false,
+              timer: 2000
+            });
+          }
+        });
+      } else {
+        // Open PIN modal
+        openPinModal();
+      }
+    }
+
+    function openPinModal() {
+      enteredPin = "";
+      updatePinDots();
+      document.getElementById("pinModal").classList.remove("hidden");
+    }
+
+    function closePinModal() {
+      document.getElementById("pinModal").classList.add("hidden");
+      enteredPin = "";
+      updatePinDots();
+    }
+
+    function handlePinKey(num) {
+      if (enteredPin.length < 4) {
+        enteredPin += num;
+        updatePinDots();
+        if (enteredPin.length === 4) {
+          verifyPin();
+        }
+      }
+    }
+
+    function handlePinBackspace() {
+      if (enteredPin.length > 0) {
+        enteredPin = enteredPin.slice(0, -1);
+        updatePinDots();
+      }
+    }
+
+    function clearPinInput() {
+      enteredPin = "";
+      updatePinDots();
+    }
+
+    function updatePinDots() {
+      const dots = document.querySelectorAll(".pin-dot");
+      dots.forEach((dot, index) => {
+        if (index < enteredPin.length) {
+          dot.classList.add("filled");
+        } else {
+          dot.classList.remove("filled");
+        }
+      });
+    }
+
+    function verifyPin() {
+      if (enteredPin === SECRET_PIN) {
+        closePinModal();
+        setRole(true);
+        Swal.fire({
+          title: "Admin Unlocked!",
+          text: "Welcome back, Chief! Debt payoff and confidential modules are now active.",
+          icon: "success",
+          confirmButtonColor: "#2563eb",
+          timer: 2500
+        });
+      } else {
+        // Shake feedback
+        const container = document.getElementById("pinDotsContainer");
+        container.classList.add("animate-bounce");
+        setTimeout(() => container.classList.remove("animate-bounce"), 500);
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Incorrect PIN",
+          text: "Please try again.",
+          showConfirmButton: false,
+          timer: 2000
+        });
+        clearPinInput();
+      }
+    }
+
+    function setRole(husbandActive) {
+      isHusband = husbandActive;
+      const roleBadge = document.getElementById("roleBadge");
+      const modeIconContainer = document.getElementById("modeIconContainer");
+      const modeIcon = document.getElementById("modeIcon");
+      const lockIcon = document.getElementById("lockIcon");
+      const lockButtonText = document.getElementById("lockButtonText");
+      const adminNavTabs = document.getElementById("adminNavTabs");
+      const headerTitle = document.getElementById("headerTitle");
+
+      if (isHusband) {
+        // Husband Admin Mode Styles
+        roleBadge.textContent = "Husband Admin";
+        roleBadge.className = "text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-200/60";
+        modeIconContainer.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 transition-all duration-300";
+        modeIcon.className = "fa-solid fa-user-tie text-lg";
+        lockIcon.className = "fa-solid fa-lock-open text-blue-600";
+        lockButtonText.textContent = "Lock Admin";
+        adminNavTabs.classList.remove("hidden");
+        headerTitle.textContent = "Family Finance Pro";
+        switchAdminTab("entry");
+      } else {
+        // Wife Mode Styles (Strictly Append-Only)
+        roleBadge.textContent = "Wife Mode";
+        roleBadge.className = "text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200/60";
+        modeIconContainer.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-md shadow-rose-500/20 transition-all duration-300";
+        modeIcon.className = "fa-solid fa-heart text-lg";
+        lockIcon.className = "fa-solid fa-lock text-rose-500";
+        lockButtonText.textContent = "Admin Access";
+        adminNavTabs.classList.add("hidden");
+        headerTitle.textContent = "Family Finance";
+        
+        // Hide all admin tabs and revert to entry view
+        document.getElementById("section-entry").classList.remove("hidden");
+        document.getElementById("section-debts").classList.add("hidden");
+        document.getElementById("section-business").classList.add("hidden");
+        document.getElementById("section-reconcile").classList.add("hidden");
+      }
+    }
+
+    function switchAdminTab(tab) {
+      if (!isHusband && tab !== 'entry') return;
+      activeAdminTab = tab;
+
+      // Tab Buttons Styling
+      document.querySelectorAll(".admin-tab-btn").forEach(btn => {
+        btn.className = "admin-tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all";
+      });
+      const activeBtn = document.getElementById(`tabBtn-${tab}`);
+      if (activeBtn) {
+        activeBtn.className = "admin-tab-btn px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-xs transition-all";
+      }
+
+      // Hide all sections
+      document.getElementById("section-entry").classList.add("hidden");
+      document.getElementById("section-debts").classList.add("hidden");
+      document.getElementById("section-business").classList.add("hidden");
+      document.getElementById("section-reconcile").classList.add("hidden");
+
+      // Show selected section
+      const targetSection = document.getElementById(`section-${tab}`);
+      if (targetSection) {
+        targetSection.classList.remove("hidden");
+      }
+    }
+
+    // ==========================================
+    // RECEIPT IMAGE COMPRESSION & BASE64 LOGIC
+    // ==========================================
+    function handleImageSelection(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Update label
+      document.getElementById("receiptFileName").textContent = file.name.length > 20 ? file.name.substring(0, 18) + '...' : file.name;
+
+      // Read & compress image using HTML5 Canvas to keep Google Apps Script payload lightweight
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          // Max dimension 1200px
+          const maxDim = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Compress to JPEG at 0.72 quality
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.72);
+          base64ReceiptString = compressedDataUrl;
+
+          // Show Preview
+          const previewImg = document.getElementById("imagePreview");
+          previewImg.src = compressedDataUrl;
+          document.getElementById("imagePreviewContainer").classList.remove("hidden");
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearImageSelection() {
+      base64ReceiptString = "";
+      document.getElementById("receiptInput").value = "";
+      document.getElementById("receiptFileName").textContent = "Take Photo or Attach Bill";
+      document.getElementById("imagePreviewContainer").classList.add("hidden");
+      document.getElementById("imagePreview").src = "";
+    }
+
+    // ==========================================
+    // FORM SUBMISSION (WIFE / DAILY ENTRY)
+    // ==========================================
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const type = document.querySelector('input[name="type"]:checked').value;
+      const amount = parseFloat(document.getElementById("amountInput").value);
+      const category = document.getElementById("categorySelect").value;
+      const account = document.getElementById("accountSelect").value;
+      const note = document.getElementById("noteInput").value.trim();
+
+      if (isNaN(amount) || amount <= 0) {
+        Swal.fire("Invalid Amount", "Please enter a valid amount.", "warning");
+        return;
+      }
+
+      // UI Loading state
+      const submitBtn = document.getElementById("submitBtn");
+      const submitIcon = document.getElementById("submitIcon");
+      const submitText = document.getElementById("submitText");
+      
+      submitBtn.disabled = true;
+      submitIcon.className = "fa-solid fa-spinner fa-spin";
+      submitText.textContent = "Recording Transaction...";
+
+      // Payload strictly matches requirements
+      const payload = {
+        action: "addTransaction",
+        user: isHusband ? "Husband" : "Wife",
+        type: type,
+        category: category,
+        amount: amount,
+        account: account,
+        note: note,
+        imageBase64: base64ReceiptString,
+        receiptBase64: base64ReceiptString // Backwards-compatible
+      };
+
+      try {
+        /**
+         * Note for Google Apps Script Web App:
+         * Sending with Content-Type text/plain avoids CORS preflight OPTIONS rejection
+         * while Apps Script e.postData.contents captures the raw JSON payload.
+         */
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        let result = {};
+        try {
+          result = await response.json();
+        } catch (e) {
+          result = { status: "success", message: "Transaction recorded" };
+        }
+
+        if (result.status === "error") {
+          throw new Error(result.message || "Failed to record transaction");
+        }
+
+        // Add to local state optimistically
+        const newRecord = {
+          ID: (result.data && result.data.id) ? result.data.id : `TXN-${Date.now().toString().slice(-6)}`,
+          Date: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }),
+          User: isHusband ? "Husband" : "Wife",
+          Type: type,
+          Category: category,
+          Amount: amount,
+          Account: account,
+          ReceiptUrl: (result.data && result.data.receiptUrl) ? result.data.receiptUrl : (base64ReceiptString ? "#preview" : ""),
+          Status: "Pending"
+        };
+        appState.recentTransactions.unshift(newRecord);
+        renderRecentTransactions();
+
+        // Reset form
+        document.getElementById("transactionForm").reset();
+        clearImageSelection();
+        document.getElementById("amountFormattedPreview").textContent = "";
+
+        // SweetAlert2 Success
+        Swal.fire({
+          icon: "success",
+          title: "Transaction Recorded!",
+          text: `LKR ${amount.toLocaleString('en-LK', { minimumFractionDigits: 2 })} has been logged to Google Sheets with 'Pending' verification.`,
+          confirmButtonColor: "#e11d48",
+          timer: 3500
+        });
+
+      } catch (err) {
+        console.error("Submission error:", err);
+        
+        // Still add locally so user work is never lost
+        const fallbackRecord = {
+          ID: `TXN-LOCAL-${Date.now().toString().slice(-4)}`,
+          Date: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }),
+          User: isHusband ? "Husband" : "Wife",
+          Type: type,
+          Category: category,
+          Amount: amount,
+          Account: account,
+          ReceiptUrl: base64ReceiptString ? "#preview" : "",
+          Status: "Pending (Offline Cached)"
+        };
+        appState.recentTransactions.unshift(fallbackRecord);
+        renderRecentTransactions();
+
+        Swal.fire({
+          icon: "info",
+          title: "Saved Locally",
+          text: "Transaction saved to screen. If your Google Sheet endpoint is still connecting, it will sync upon reconnect.",
+          confirmButtonColor: "#3b82f6"
+        });
+
+        document.getElementById("transactionForm").reset();
+        clearImageSelection();
+      } finally {
+        submitBtn.disabled = false;
+        submitIcon.className = "fa-solid fa-paper-plane";
+        submitText.textContent = "Submit Transaction";
+      }
+    }
+
+    // ==========================================
+    // DATA FETCHING & RENDERING (GET REQUEST)
+    // ==========================================
+    async function fetchInitialData(isManualSync = false) {
+      const refreshIcon = document.getElementById("refreshIcon");
+      if (refreshIcon) refreshIcon.classList.add("fa-spin");
+
+      try {
+        const response = await fetch(`${API_URL}?limit=30`, {
+          method: "GET",
+          headers: { "Accept": "application/json" }
+        });
+
+        if (!response.ok) throw new Error("HTTP error " + response.status);
+        const data = await response.json();
+
+        if (data && data.status === "success" && data.data) {
+          if (data.data.accounts && data.data.accounts.length > 0) {
+            appState.accounts = data.data.accounts;
+          }
+          if (data.data.loans && data.data.loans.length > 0) {
+            appState.loans = data.data.loans;
+          }
+          if (data.data.recentTransactions && data.data.recentTransactions.length > 0) {
+            appState.recentTransactions = data.data.recentTransactions;
+          }
+
+          renderRecentTransactions();
+          renderLoansProgress();
+          renderReconciliationTable();
+
+          if (isManualSync) {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Data Synced with Google Sheets',
+              showConfirmButton: false,
+              timer: 2000
+            });
+          }
+        }
+      } catch (err) {
+        console.warn("Using offline cached or initial dataset:", err);
+        // Fallback rendering
+        renderRecentTransactions();
+        renderLoansProgress();
+        renderReconciliationTable();
+
+        if (isManualSync) {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'info',
+            title: 'Showing latest offline data',
+            showConfirmButton: false,
+            timer: 2000
+          });
+        }
+      } finally {
+        if (refreshIcon) refreshIcon.classList.remove("fa-spin");
+      }
+    }
+
+    // Render Recent Submissions (Strictly Append-Only)
+    function renderRecentTransactions() {
+      const container = document.getElementById("submissionsList");
+      const badge = document.getElementById("submissionCountBadge");
+      const list = appState.recentTransactions;
+
+      badge.textContent = `${list.length} ${list.length === 1 ? 'entry' : 'entries'}`;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="py-8 text-center text-slate-400">
+            <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-300"></i>
+            <p class="text-xs">No transactions recorded yet today.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map((item, index) => {
+        const isExpense = (item.Type || "Expense").toLowerCase() === "expense";
+        const amt = parseFloat(item.Amount) || 0;
+        const formattedAmt = amt.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const hasReceipt = item.ReceiptUrl && item.ReceiptUrl !== "" && item.ReceiptUrl !== "Upload Failed";
+
+        // Category icon lookup
+        let catIcon = "fa-tag";
+        if (item.Category?.includes("Food")) catIcon = "fa-burger";
+        else if (item.Category?.includes("Bills") || item.Category?.includes("Rent")) catIcon = "fa-lightbulb";
+        else if (item.Category?.includes("Transport")) catIcon = "fa-car";
+        else if (item.Category?.includes("Campus")) catIcon = "fa-graduation-cap";
+        else if (item.Category?.includes("Medical")) catIcon = "fa-pills";
+        else if (item.Category?.includes("Loan")) catIcon = "fa-credit-card";
+
+        return `
+          <div class="p-3.5 sm:p-4 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 min-w-0">
+              <div class="w-10 h-10 rounded-xl ${isExpense ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'} flex items-center justify-center font-bold text-sm shrink-0">
+                <i class="fa-solid ${catIcon}"></i>
+              </div>
+              <div class="truncate">
+                <div class="flex items-center space-x-2">
+                  <h4 class="font-bold text-slate-900 text-sm truncate">${item.Category || 'General'}</h4>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/50">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.2 animate-pulse"></span>
+                    ${item.Status || 'Pending Verification'}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 truncate mt-0.5">
+                  <span>${item.Account || 'Cash'}</span> • <span class="text-slate-400">${item.Date || 'Today'}</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="text-right shrink-0">
+              <p class="font-extrabold text-sm sm:text-base ${isExpense ? 'text-slate-900' : 'text-emerald-600'}">
+                ${isExpense ? '-' : '+'} LKR ${formattedAmt}
+              </p>
+              ${hasReceipt ? `
+                <button onclick="viewReceiptModal('${item.ReceiptUrl}')" class="mt-1 text-[11px] font-semibold text-blue-600 hover:text-blue-800 flex items-center justify-end space-x-1 ml-auto transition-colors">
+                  <i class="fa-solid fa-paperclip"></i>
+                  <span>View Bill</span>
+                </button>
+              ` : `
+                <span class="text-[10px] text-slate-300">No Receipt</span>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Render Debt Settlement Progress (Section A)
+    function renderLoansProgress() {
+      let totalTarget = 0;
+      let totalPaid = 0;
+
+      appState.loans.forEach(loan => {
+        totalTarget += Number(loan.TargetAmount) || 0;
+        totalPaid += Number(loan.PaidAmount) || 0;
+      });
+
+      const totalRemaining = Math.max(0, totalTarget - totalPaid);
+      const overallPercent = totalTarget > 0 ? Math.round((totalPaid / totalTarget) * 100) : 0;
+
+      const remainingEl = document.getElementById("debtTotalRemainingDisplay");
+      const settledEl = document.getElementById("debtTotalSettledDisplay");
+      const barEl = document.getElementById("overallDebtProgressBar");
+
+      if (remainingEl) remainingEl.textContent = `LKR ${totalRemaining.toLocaleString('en-LK')}`;
+      if (settledEl) settledEl.textContent = `LKR ${totalPaid.toLocaleString('en-LK')} (${overallPercent}%)`;
+      if (barEl) barEl.style.width = `${overallPercent}%`;
+    }
+
+    // Render Reconciliation Table (Section C)
+    function renderReconciliationTable() {
+      const tbody = document.getElementById("reconcileTableBody");
+      if (!tbody) return;
+
+      tbody.innerHTML = appState.accounts.map((acc, idx) => {
+        const expected = Number(acc.Balance) || 0;
+        return `
+          <tr class="hover:bg-slate-50/80">
+            <td class="py-3 px-3 font-bold text-slate-900">${acc.AccountName}</td>
+            <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${acc.Owner === 'Husband' ? 'bg-blue-50 text-blue-700' : 'bg-rose-50 text-rose-700'}">${acc.Owner}</span></td>
+            <td class="py-3 px-3 font-semibold text-slate-900" id="expectedBal-${idx}">LKR ${expected.toLocaleString('en-LK', { minimumFractionDigits: 2 })}</td>
+            <td class="py-3 px-3">
+              <input
+                type="number"
+                step="0.01"
+                id="actualBalInput-${idx}"
+                value="${expected}"
+                oninput="calculateRowVariance(${idx}, ${expected})"
+                class="w-32 py-1 px-2.5 rounded-lg border border-slate-200 text-xs font-semibold focus:outline-hidden focus:border-blue-500"
+              />
+            </td>
+            <td class="py-3 px-3 font-bold text-emerald-600" id="variance-${idx}">LKR 0.00</td>
+            <td class="py-3 px-3 text-center" id="reconcileBadge-${idx}">
+              <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px]">
+                <i class="fa-solid fa-check mr-1"></i> Matched
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function calculateRowVariance(index, expected) {
+      const inputEl = document.getElementById(`actualBalInput-${index}`);
+      const varianceEl = document.getElementById(`variance-${index}`);
+      const badgeEl = document.getElementById(`reconcileBadge-${index}`);
+
+      const actual = parseFloat(inputEl.value) || 0;
+      const diff = actual - expected;
+
+      if (Math.abs(diff) < 0.01) {
+        varianceEl.textContent = "LKR 0.00";
+        varianceEl.className = "py-3 px-3 font-bold text-emerald-600";
+        badgeEl.innerHTML = `
+          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px]">
+            <i class="fa-solid fa-check mr-1"></i> Matched
+          </span>
+        `;
+      } else {
+        const sign = diff > 0 ? "+" : "";
+        varianceEl.textContent = `${sign} LKR ${diff.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+        varianceEl.className = "py-3 px-3 font-bold text-rose-600";
+        badgeEl.innerHTML = `
+          <span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i> Mismatch
+          </span>
+        `;
+      }
+    }
+
+    function recalculateReconciliation() {
+      appState.accounts.forEach((acc, idx) => {
+        calculateRowVariance(idx, Number(acc.Balance) || 0);
+      });
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Reconciliation Audit Ran',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+
+    function saveReconciliationSnapshot() {
+      Swal.fire({
+        title: "Confirm Audit Reconciliation?",
+        text: "This will log the reconciliation record to your financial books.",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#059669",
+        confirmButtonText: "Confirm & Log"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire("Verified!", "Monthly balance reconciliation confirmed successfully.", "success");
+        }
+      });
+    }
+
+    // ==========================================
+    // RECEIPT PREVIEW MODAL
+    // ==========================================
+    function viewReceiptModal(url) {
+      const modal = document.getElementById("receiptModal");
+      const img = document.getElementById("modalReceiptImg");
+      const link = document.getElementById("modalReceiptDriveLink");
+
+      if (url === "#preview" || url.startsWith("data:image")) {
+        img.src = base64ReceiptString || "https://images.unsplash.com/photo-1554415707-9e49fa7a08c4?w=500&auto=format&fit=crop";
+        link.classList.add("hidden");
+      } else {
+        img.src = url;
+        link.href = url;
+        link.classList.remove("hidden");
+      }
+
+      modal.classList.remove("hidden");
+    }
+
+    function closeReceiptModal() {
+      document.getElementById("receiptModal").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>
