@@ -218,13 +218,12 @@
                 </span>
                 <div>
                   <h3 class="font-extrabold text-sm sm:text-base text-white">Phase 1: Zero-Debt Freedom 🛡️</h3>
-                  <p class="text-[11px] text-emerald-300 font-semibold">Active Priority (Freedom Target: LKR 1,187,000)
-                  </p>
+                  <p class="text-[11px] text-emerald-300 font-semibold">Active Priority (Target: LKR 1,187,000)</p>
                 </div>
               </div>
               <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-400 text-slate-950"
                 id="phase1PercentBadge">
-                21% Cleared
+                0% Cleared
               </span>
             </div>
 
@@ -232,12 +231,12 @@
             <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
               <div id="phase1ProgressBar"
                 class="bg-gradient-to-r from-emerald-400 to-teal-300 h-full rounded-full transition-all duration-700"
-                style="width: 21%"></div>
+                style="width: 0%"></div>
             </div>
 
             <div class="flex justify-between text-[11px] text-slate-300">
-              <span id="phase1PaidText">Paid: LKR 255,000</span>
-              <span class="text-rose-300 font-semibold" id="phase1RemainingText">Remaining: LKR 932,000</span>
+              <span id="phase1PaidText">Paid: LKR 0</span>
+              <span class="text-rose-300 font-semibold" id="phase1RemainingText">Remaining: LKR 1,187,000</span>
             </div>
           </div>
 
@@ -461,8 +460,14 @@
             </span>
           </div>
 
-          <div class="relative py-3 flex items-center justify-center min-h-[240px]">
+          <div class="relative py-3 flex items-center justify-center min-h-[240px]" id="expenseChartContainer">
             <canvas id="expenseBreakdownChart" class="max-h-[220px]"></canvas>
+            <div id="noExpenseDataMsg"
+              class="hidden absolute inset-0 flex flex-col items-center justify-center text-slate-400 text-xs">
+              <i class="fa-solid fa-receipt text-3xl text-slate-200 mb-2"></i>
+              <p>No expenses recorded yet.</p>
+              <p class="text-[11px] text-slate-300 mt-0.5">Your breakdown will show here! 🌸</p>
+            </div>
           </div>
 
           <p class="text-center text-[11px] text-slate-400 italic">
@@ -491,7 +496,7 @@
             class="p-2 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-between text-xs">
             <span class="font-bold text-emerald-800">
               <i class="fa-solid fa-shield-heart text-emerald-600 mr-1.5"></i>
-              <span id="debtSummaryBadge">LKR 255k Settled So Far</span>
+              <span id="debtSummaryBadge">LKR 0 Settled So Far</span>
             </span>
             <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-emerald-600 text-white">
               Zero Debt Priority
@@ -696,7 +701,7 @@
   </main>
 
   <!-- ========================================================================= -->
-  <!-- PIN VERIFICATION MODAL (HUSBAND ADMIN UNLOCK)                            -->
+  <!-- PIN VERIFICATION MODAL (HUSBAND ADMIN UNLOCK - STRICTLY CONFIDENTIAL)     -->
   <!-- ========================================================================= -->
   <div id="pinModal"
     class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
@@ -724,7 +729,7 @@
       </div>
 
       <!-- Numeric Keypad for fast touch screen usage -->
-      <div class="grid grid-cols-3 gap-2.5 max-w-[260px] mx-auto mb-4">
+      <div class="grid grid-cols-3 gap-2.5 max-w-[260px] mx-auto mb-2">
         <button type="button" onclick="handlePinKey('1')"
           class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">1</button>
         <button type="button" onclick="handlePinKey('2')"
@@ -753,7 +758,7 @@
         </button>
       </div>
 
-      <p class="text-[11px] text-slate-400">Default Access PIN: <span class="font-bold text-slate-500">8010</span></p>
+      <!-- PIN Text Leak Removed for Confidentiality -->
     </div>
   </div>
 
@@ -864,14 +869,69 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- JAVASCRIPT LOGIC CORE                                                     -->
+  <!-- JAVASCRIPT LOGIC CORE (CLEAN SLATE & LOCAL STORAGE PERSISTENCE)           -->
   <!-- ========================================================================= -->
   <script>
     // ==========================================
-    // CONFIGURATION & STATE
+    // CONFIGURATION & PERSISTENCE KEYS
     // ==========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbwOVuycTAgvqmiiBJxon_dqPmNwWRfmXTFBgiDxe0HMwgqeNJ0j5gYqTezCM5YO0sm8aA/exec";
-    const SECRET_PIN = "8010"; // Default Husband PIN
+    const SECRET_PIN = "8010"; // Strictly confidential internal PIN
+
+    const STORAGE_KEYS = {
+      LOANS: 'FAMILY_FINANCE_LOANS_V2',
+      GOALS: 'FAMILY_FINANCE_GOALS_V2',
+      ACCOUNTS: 'FAMILY_FINANCE_ACCOUNTS_V2',
+      TXNS: 'FAMILY_FINANCE_TXNS_V2'
+    };
+
+    // Clean initial seed data (No mock transactions, Paid = 0, Goals Saved = 0)
+    const DEFAULT_LOANS = [
+      { id: "L01", LoanName: "Credit Card", TargetAmount: 350000, PaidAmount: 0, Remaining: 350000, Priority: "High" },
+      { id: "L02", LoanName: "Dad's Loan", TargetAmount: 380000, PaidAmount: 0, Remaining: 380000, Priority: "Medium" },
+      { id: "L03", LoanName: "Husband's Loan", TargetAmount: 357000, PaidAmount: 0, Remaining: 357000, Priority: "Medium" },
+      { id: "L04", LoanName: "Mom's Loan", TargetAmount: 100000, PaidAmount: 0, Remaining: 100000, Priority: "Low" }
+    ];
+
+    const DEFAULT_GOALS = [
+      { id: "G01", GoalName: "Our Dream Wedding", Icon: "💍", TargetAmount: 1500000, SavedAmount: 0 },
+      { id: "G02", GoalName: "Our Future House", Icon: "🏡", TargetAmount: 3000000, SavedAmount: 0 }
+    ];
+
+    const DEFAULT_ACCOUNTS = [
+      { AccountName: "HNB (122020268397)", Bank: "HNB", AccNo: "122020268397", Balance: 0, Owner: "Wife" },
+      { AccountName: "Commercial Bank (8020898065)", Bank: "ComBank", AccNo: "8020898065", Balance: 0, Owner: "Wife" },
+      { AccountName: "Union Bank (0270201000114795)", Bank: "Union", AccNo: "0270201000114795", Balance: 0, Owner: "Wife" },
+      { AccountName: "Cash in Hand", Bank: "Cash", AccNo: "N/A", Balance: 0, Owner: "Wife" },
+      { AccountName: "ComBank (8010446177)", Bank: "Commercial Bank", AccNo: "8010446177", Balance: 0, Owner: "Husband" },
+      { AccountName: "BOC (6280350)", Bank: "BOC", AccNo: "6280350", Balance: 0, Owner: "Husband" }
+    ];
+
+    // Local Storage Helper
+    function loadFromStorage(key, fallback) {
+      try {
+        const item = localStorage.getItem(key);
+        return item ? JSON.parse(item) : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    function saveToStorage(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (e) {
+        console.warn("Storage write failed:", e);
+      }
+    }
+
+    // App State initialized directly from localStorage with clean slate defaults
+    let appState = {
+      loans: loadFromStorage(STORAGE_KEYS.LOANS, DEFAULT_LOANS),
+      goals: loadFromStorage(STORAGE_KEYS.GOALS, DEFAULT_GOALS),
+      accounts: loadFromStorage(STORAGE_KEYS.ACCOUNTS, DEFAULT_ACCOUNTS),
+      recentTransactions: loadFromStorage(STORAGE_KEYS.TXNS, []) // ZERO mock data!
+    };
 
     let isHusband = false;
     let enteredPin = "";
@@ -891,47 +951,22 @@
       "Small daily investments create our extraordinary lifetime ahead 🌸"
     ];
 
-    // Core In-Memory Application State
-    let appState = {
-      loans: [
-        { id: "L01", LoanName: "Credit Card", TargetAmount: 350000, PaidAmount: 45000, Remaining: 305000, Priority: "High" },
-        { id: "L02", LoanName: "Dad's Loan", TargetAmount: 380000, PaidAmount: 60000, Remaining: 320000, Priority: "Medium" },
-        { id: "L03", LoanName: "Husband's Loan", TargetAmount: 357000, PaidAmount: 120000, Remaining: 237000, Priority: "Medium" },
-        { id: "L04", LoanName: "Mom's Loan", TargetAmount: 100000, PaidAmount: 30000, Remaining: 70000, Priority: "Low" }
-      ],
-      goals: [
-        { id: "G01", GoalName: "Our Dream Wedding", Icon: "💍", TargetAmount: 1500000, SavedAmount: 0 },
-        { id: "G02", GoalName: "Our Future House", Icon: "🏡", TargetAmount: 3000000, SavedAmount: 0 }
-      ],
-      accounts: [
-        { AccountName: "HNB (122020268397)", Bank: "HNB", AccNo: "122020268397", Balance: 45000, Owner: "Wife" },
-        { AccountName: "Commercial Bank (8020898065)", Bank: "ComBank", AccNo: "8020898065", Balance: 28500, Owner: "Wife" },
-        { AccountName: "Union Bank (0270201000114795)", Bank: "Union", AccNo: "0270201000114795", Balance: 12000, Owner: "Wife" },
-        { AccountName: "Cash in Hand", Bank: "Cash", AccNo: "N/A", Balance: 8400, Owner: "Wife" },
-        { AccountName: "ComBank (8010446177)", Bank: "Commercial Bank", AccNo: "8010446177", Balance: 185000, Owner: "Husband" },
-        { AccountName: "BOC (6280350)", Bank: "BOC", AccNo: "6280350", Balance: 94000, Owner: "Husband" }
-      ],
-      recentTransactions: [
-        { ID: "TXN-01", Date: "2026-09-29 11:30:00", User: "Wife", Type: "Expense", Category: "Food & Groceries", Amount: 3850, Account: "HNB (122020268397)", ReceiptUrl: "", Status: "Pending" },
-        { ID: "TXN-02", Date: "2026-09-28 17:15:00", User: "Wife", Type: "Expense", Category: "Campus & Practicals", Amount: 2400, Account: "Cash in Hand", ReceiptUrl: "", Status: "Pending" },
-        { ID: "TXN-03", Date: "2026-09-27 19:40:00", User: "Wife", Type: "Expense", Category: "Rent & Utility Bills", Amount: 14500, Account: "Commercial Bank (8020898065)", ReceiptUrl: "", Status: "Verified" },
-        { ID: "TXN-04", Date: "2026-09-26 14:10:00", User: "Wife", Type: "Expense", Category: "Transport", Amount: 1800, Account: "Cash in Hand", ReceiptUrl: "", Status: "Verified" },
-        { ID: "TXN-05", Date: "2026-09-25 10:00:00", User: "Wife", Type: "Expense", Category: "Loan Repayment", Amount: 15000, Account: "Commercial Bank (8020898065)", ReceiptUrl: "", Status: "Verified" }
-      ]
-    };
-
     // ==========================================
     // INITIALIZATION & LIFECYCLE
     // ==========================================
     document.addEventListener("DOMContentLoaded", () => {
       setupDatesAndAffirmations();
       setupAmountFormatter();
+
+      // Render from persistent storage first so updates never revert
       renderRoadmapAndGoals();
       renderRecentTransactions();
       renderLoanCards();
       renderGoalsCards();
       renderReconciliationTable();
       initCharts();
+
+      // Sync from Google Sheets in background
       fetchInitialData(false);
     });
 
@@ -945,7 +980,6 @@
       document.getElementById("todayDateStr").textContent = dateStr;
       document.getElementById("currentDayBadge").textContent = dateStr;
 
-      // Pick rotating affirmation
       const aff = affirmations[Math.floor(Math.random() * affirmations.length)];
       document.getElementById("rotatingAffirmation").textContent = aff;
     }
@@ -1055,10 +1089,10 @@
         setRole(true);
         Swal.fire({
           title: "Admin Unlocked!",
-          text: "Welcome back, Chief! Loan editor, goals config, and reconciliation tools are ready.",
+          text: "Welcome back, Chief! Loan editor, goals config, and audit tools are ready.",
           icon: "success",
           confirmButtonColor: "#2563eb",
-          timer: 2200
+          timer: 2000
         });
       } else {
         const container = document.getElementById("pinDotsContainer");
@@ -1111,7 +1145,6 @@
         headerTitle.textContent = "Our Future Journey";
         headerSubtext.textContent = "Append-only daily journal";
 
-        // Hide all admin tabs
         document.getElementById("section-entry").classList.remove("hidden");
         document.getElementById("section-loans").classList.add("hidden");
         document.getElementById("section-goals").classList.add("hidden");
@@ -1261,6 +1294,7 @@
           Status: "Pending"
         };
         appState.recentTransactions.unshift(newRecord);
+        saveToStorage(STORAGE_KEYS.TXNS, appState.recentTransactions);
 
         renderRecentTransactions();
         updateCharts();
@@ -1292,6 +1326,8 @@
           Status: "Pending (Cached)"
         };
         appState.recentTransactions.unshift(fallbackRecord);
+        saveToStorage(STORAGE_KEYS.TXNS, appState.recentTransactions);
+
         renderRecentTransactions();
         updateCharts();
 
@@ -1312,7 +1348,7 @@
     }
 
     // ==========================================
-    // 5A. EDITABLE LOAN MANAGER LOGIC (HUSBAND)
+    // 5A. EDITABLE LOAN MANAGER (PERSISTENT)
     // ==========================================
     function renderLoanCards() {
       const container = document.getElementById("loansCardsContainer");
@@ -1320,7 +1356,7 @@
 
       container.innerHTML = appState.loans.map(loan => {
         const target = Number(loan.TargetAmount) || 0;
-        const remaining = Number(loan.Remaining) || 0;
+        const remaining = Number(loan.Remaining);
         const paid = Math.max(0, target - remaining);
         const percent = target > 0 ? Math.round((paid / target) * 100) : 0;
 
@@ -1415,7 +1451,7 @@
         };
       });
 
-      // Update local state
+      // 1. Immediately update memory and localStorage
       appState.loans.forEach(loan => {
         const found = updatedLoansPayload.find(u => u.id === loan.id);
         if (found) {
@@ -1423,12 +1459,15 @@
           loan.PaidAmount = Math.max(0, loan.TargetAmount - found.remaining);
         }
       });
+      saveToStorage(STORAGE_KEYS.LOANS, appState.loans);
 
+      // 2. Re-render UI components immediately without reverting
       renderRoadmapAndGoals();
       renderLoanCards();
       updateCharts();
       closeEditLoansModal();
 
+      // 3. Send POST to Google Apps Script
       try {
         await fetch(API_URL, {
           method: "POST",
@@ -1441,14 +1480,14 @@
 
         Swal.fire({
           icon: "success",
-          title: "Loans Updated!",
-          text: "Loan balances have been synchronized with Google Sheets.",
+          title: "Loans Saved & Persisted!",
+          text: "Loan balances updated locally and synced to Google Sheets.",
           confirmButtonColor: "#2563eb",
           timer: 2500
         });
       } catch (err) {
         console.warn("Backend update error:", err);
-        Swal.fire("Saved Locally", "Loan balances updated in view and cached locally.", "info");
+        Swal.fire("Saved Locally", "Loan balances saved to browser storage. Will sync to Google Sheets when online.", "info");
       } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = "Save Changes";
@@ -1456,7 +1495,7 @@
     }
 
     // ==========================================
-    // 5B. EDITABLE GOALS MANAGER LOGIC (HUSBAND)
+    // 5B. EDITABLE GOALS MANAGER (PERSISTENT)
     // ==========================================
     function renderGoalsCards() {
       const container = document.getElementById("goalsCardsContainer");
@@ -1558,6 +1597,7 @@
         };
       });
 
+      // 1. Immediately update memory and localStorage
       appState.goals.forEach(g => {
         const found = updatedGoalsPayload.find(u => u.id === g.id);
         if (found) {
@@ -1565,11 +1605,14 @@
           g.SavedAmount = found.saved;
         }
       });
+      saveToStorage(STORAGE_KEYS.GOALS, appState.goals);
 
+      // 2. Re-render UI components immediately without reverting
       renderRoadmapAndGoals();
       renderGoalsCards();
       closeConfigureGoalsModal();
 
+      // 3. Send POST to Google Apps Script
       try {
         await fetch(API_URL, {
           method: "POST",
@@ -1582,14 +1625,14 @@
 
         Swal.fire({
           icon: "success",
-          title: "Goals Updated!",
-          text: "Future wedding and home goals configured successfully.",
+          title: "Goals Saved & Persisted!",
+          text: "Wedding and dream home fund milestones updated.",
           confirmButtonColor: "#d97706",
           timer: 2500
         });
       } catch (err) {
         console.warn("Goals update error:", err);
-        Swal.fire("Saved Locally", "Goals configured locally in your browser session.", "info");
+        Swal.fire("Saved Locally", "Goals configured locally in your browser storage.", "info");
       } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = "Save Goals";
@@ -1605,7 +1648,7 @@
 
       appState.loans.forEach(loan => {
         totalTarget += Number(loan.TargetAmount) || 0;
-        totalRemaining += Number(loan.Remaining) || 0;
+        totalRemaining += Number(loan.Remaining);
       });
 
       const totalPaid = Math.max(0, totalTarget - totalRemaining);
@@ -1615,9 +1658,8 @@
       document.getElementById("phase1ProgressBar").style.width = `${percent}%`;
       document.getElementById("phase1PaidText").textContent = `Paid: LKR ${totalPaid.toLocaleString('en-LK')}`;
       document.getElementById("phase1RemainingText").textContent = `Remaining: LKR ${totalRemaining.toLocaleString('en-LK')}`;
-      document.getElementById("debtSummaryBadge").textContent = `LKR ${(totalPaid / 1000).toFixed(0)}k Settled So Far`;
+      document.getElementById("debtSummaryBadge").textContent = `LKR ${totalPaid.toLocaleString('en-LK')} Settled So Far`;
 
-      // Mini goals in header
       const weddingGoal = appState.goals.find(g => g.id === "G01");
       const homeGoal = appState.goals.find(g => g.id === "G02");
 
@@ -1723,9 +1765,11 @@
     function initCharts() {
       // 1. Expense Breakdown (Doughnut)
       const ctxExpense = document.getElementById("expenseBreakdownChart").getContext("2d");
+      const expenseData = calculateExpenseDistribution();
+
       expenseChartInstance = new Chart(ctxExpense, {
         type: 'doughnut',
-        data: calculateExpenseDistribution(),
+        data: expenseData,
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -1756,7 +1800,7 @@
         type: 'bar',
         data: calculateDebtDistribution(),
         options: {
-          indexAxis: 'y', // Horizontal bars
+          indexAxis: 'y',
           responsive: true,
           maintainAspectRatio: false,
           scales: {
@@ -1801,9 +1845,11 @@
         'Other': 0
       };
 
+      let totalExpense = 0;
       appState.recentTransactions.forEach(t => {
         if ((t.Type || 'Expense').toLowerCase() === 'expense') {
           const amt = parseFloat(t.Amount) || 0;
+          totalExpense += amt;
           if (categoryTotals.hasOwnProperty(t.Category)) {
             categoryTotals[t.Category] += amt;
           } else {
@@ -1812,28 +1858,46 @@
         }
       });
 
-      return {
-        labels: Object.keys(categoryTotals),
-        datasets: [{
-          data: Object.values(categoryTotals),
-          backgroundColor: [
-            '#f43f5e', // Food (Rose)
-            '#f59e0b', // Bills (Amber)
-            '#3b82f6', // Transport (Blue)
-            '#8b5cf6', // Campus (Violet)
-            '#10b981', // Loan (Emerald)
-            '#94a3b8'  // Other (Slate)
-          ],
-          borderWidth: 2,
-          borderColor: '#ffffff'
-        }]
-      };
+      const noDataEl = document.getElementById("noExpenseDataMsg");
+      const canvasEl = document.getElementById("expenseBreakdownChart");
+
+      if (totalExpense === 0) {
+        if (noDataEl) noDataEl.classList.remove("hidden");
+        if (canvasEl) canvasEl.classList.add("opacity-20");
+        return {
+          labels: ['No Expenses Yet'],
+          datasets: [{
+            data: [1],
+            backgroundColor: ['#e2e8f0'],
+            borderWidth: 0
+          }]
+        };
+      } else {
+        if (noDataEl) noDataEl.classList.add("hidden");
+        if (canvasEl) canvasEl.classList.remove("opacity-20");
+        return {
+          labels: Object.keys(categoryTotals),
+          datasets: [{
+            data: Object.values(categoryTotals),
+            backgroundColor: [
+              '#f43f5e',
+              '#f59e0b',
+              '#3b82f6',
+              '#8b5cf6',
+              '#10b981',
+              '#94a3b8'
+            ],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        };
+      }
     }
 
     function calculateDebtDistribution() {
       const labels = appState.loans.map(l => l.LoanName);
       const paidAmounts = appState.loans.map(l => Number(l.PaidAmount) || 0);
-      const remainingAmounts = appState.loans.map(l => Number(l.Remaining) || 0);
+      const remainingAmounts = appState.loans.map(l => Number(l.Remaining));
 
       return {
         labels: labels,
@@ -1866,7 +1930,7 @@
     }
 
     // ==========================================
-    // RECENT SUBMISSIONS FEED RENDERING
+    // RECENT SUBMISSIONS FEED RENDERING (CLEAN EMPTY STATE)
     // ==========================================
     function renderRecentTransactions() {
       const container = document.getElementById("submissionsList");
@@ -1877,9 +1941,12 @@
 
       if (list.length === 0) {
         container.innerHTML = `
-          <div class="py-8 text-center text-slate-400">
-            <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-300"></i>
-            <p class="text-xs">No transactions recorded yet today.</p>
+          <div class="py-12 text-center text-slate-400">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto text-xl mb-2.5">
+              ✨
+            </div>
+            <p class="text-sm font-semibold text-slate-600">No transactions recorded yet.</p>
+            <p class="text-xs text-slate-400 mt-0.5">Start tracking today! ✨</p>
           </div>
         `;
         return;
@@ -1937,7 +2004,7 @@
     }
 
     // ==========================================
-    // DATA FETCHING (GET REQUEST)
+    // DATA FETCHING (GET REQUEST FROM GOOGLE SHEETS)
     // ==========================================
     async function fetchInitialData(isManualSync = false) {
       const refreshIcon = document.getElementById("refreshIcon");
@@ -1955,19 +2022,22 @@
         if (data && data.status === "success" && data.data) {
           if (data.data.accounts && data.data.accounts.length > 0) {
             appState.accounts = data.data.accounts;
+            saveToStorage(STORAGE_KEYS.ACCOUNTS, appState.accounts);
           }
           if (data.data.loans && data.data.loans.length > 0) {
-            // Merge with local structure while preserving IDs
+            // Merge with local structure while preserving user adjustments
             data.data.loans.forEach((serverLoan, index) => {
               if (appState.loans[index]) {
                 appState.loans[index].TargetAmount = Number(serverLoan.TargetAmount) || appState.loans[index].TargetAmount;
-                appState.loans[index].PaidAmount = Number(serverLoan.PaidAmount) || appState.loans[index].PaidAmount;
+                appState.loans[index].PaidAmount = Number(serverLoan.PaidAmount) || 0;
                 appState.loans[index].Remaining = Number(serverLoan.Remaining) || appState.loans[index].Remaining;
               }
             });
+            saveToStorage(STORAGE_KEYS.LOANS, appState.loans);
           }
-          if (data.data.recentTransactions && data.data.recentTransactions.length > 0) {
+          if (data.data.recentTransactions && Array.isArray(data.data.recentTransactions)) {
             appState.recentTransactions = data.data.recentTransactions;
+            saveToStorage(STORAGE_KEYS.TXNS, appState.recentTransactions);
           }
 
           renderRoadmapAndGoals();
@@ -1989,7 +2059,7 @@
           }
         }
       } catch (err) {
-        console.warn("Using offline fallback state:", err);
+        console.warn("Using persistent local storage state:", err);
         renderRoadmapAndGoals();
         renderRecentTransactions();
         renderLoanCards();
@@ -2002,7 +2072,7 @@
             toast: true,
             position: 'top-end',
             icon: 'info',
-            title: 'Showing cached offline records',
+            title: 'Showing verified offline storage records',
             showConfirmButton: false,
             timer: 2000
           });
