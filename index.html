@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Our Future Journey | Family Finance Tracker</title>
-  
+
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -13,38 +14,28 @@
       theme: {
         extend: {
           colors: {
-            roseGold: {
-              50: '#fdf8f6',
-              100: '#f2e8e1',
-              200: '#eaddd7',
-              300: '#e0c3b2',
-              400: '#d4a373',
-              500: '#b87d4b',
-              600: '#9c6644',
+            emeraldAccent: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
             },
-            love: {
+            roseLove: {
               50: '#fff1f2',
               100: '#ffe4e6',
               200: '#fecdd3',
-              400: '#fb7185',
               500: '#f43f5e',
               600: '#e11d48',
               700: '#be123c',
             },
-            dream: {
-              50: '#f5f3ff',
-              100: '#ede9fe',
-              500: '#8b5cf6',
-              600: '#7c3aed',
-              700: '#6d28d9',
-            },
-            admin: {
+            adminBlue: {
               50: '#eff6ff',
               100: '#dbeafe',
               500: '#3b82f6',
               600: '#2563eb',
               700: '#1d4ed8',
-              800: '#1e40af',
               900: '#0f172a',
             }
           },
@@ -56,16 +47,17 @@
     }
   </script>
 
-  <!-- Google Fonts & FontAwesome Icons -->
+  <!-- Google Fonts & FontAwesome 6 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <!-- SweetAlert2 for notifications -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!-- Chart.js for beautiful interactive analytics -->
+  <!-- Chart.js for interactive analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -73,79 +65,88 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
-    .font-romantic {
-      font-family: 'Playfair Display', serif;
-    }
-    /* Smooth Transitions */
+
     .fade-enter {
-      animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     /* Pin keypad dot animation */
     .pin-dot {
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     .pin-dot.filled {
       background-color: #2563eb;
       transform: scale(1.15);
       border-color: #2563eb;
     }
-    /* Subtle pulse glow for wedding & home goals */
-    .glow-gold {
-      box-shadow: 0 0 20px -5px rgba(212, 163, 115, 0.35);
-    }
-    .glow-rose {
-      box-shadow: 0 0 20px -5px rgba(244, 63, 94, 0.3);
-    }
+
     /* Custom scrollbars */
     ::-webkit-scrollbar {
       width: 5px;
       height: 5px;
     }
+
     ::-webkit-scrollbar-thumb {
-      background: #e2e8f0;
+      background: #cbd5e1;
       border-radius: 9999px;
     }
   </style>
 </head>
-<body class="bg-gradient-to-b from-slate-50 via-rose-50/20 to-slate-50 text-slate-800 min-h-screen pb-24 selection:bg-rose-500 selection:text-white">
+
+<body
+  class="bg-gradient-to-b from-slate-50 via-emerald-50/15 to-slate-50 text-slate-800 min-h-screen pb-24 selection:bg-emerald-600 selection:text-white">
 
   <!-- ========================================================================= -->
-  <!-- TOP NAVBAR & ROLE CONTROLLER                                              -->
+  <!-- 1. TOP NAVBAR & DUAL ROLE CONTROLLER                                      -->
   <!-- ========================================================================= -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-rose-100/80 shadow-xs transition-colors duration-300" id="mainHeader">
+  <header
+    class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs transition-colors duration-300"
+    id="mainHeader">
     <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-      
-      <!-- Logo / Role Indicator -->
+
+      <!-- Brand & Mode Indicator -->
       <div class="flex items-center space-x-3">
-        <div id="modeIconContainer" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 via-pink-500 to-amber-400 flex items-center justify-center text-white shadow-md shadow-rose-500/20 transition-all duration-300">
-          <i id="modeIcon" class="fa-solid fa-heart text-lg animate-pulse"></i>
+        <div id="modeIconContainer"
+          class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 transition-all duration-300">
+          <i id="modeIcon" class="fa-solid fa-heart text-base animate-pulse"></i>
         </div>
         <div>
           <div class="flex items-center space-x-2">
-            <h1 class="font-extrabold text-base md:text-lg tracking-tight text-slate-900" id="headerTitle">Our Future Journey</h1>
-            <span id="roleBadge" class="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200/60">
+            <h1 class="font-extrabold text-base md:text-lg tracking-tight text-slate-900" id="headerTitle">Our Future
+              Journey</h1>
+            <span id="roleBadge"
+              class="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200/60">
               Wife Mode
             </span>
           </div>
-          <p class="text-xs text-slate-500 flex items-center space-x-1" id="greetingSubtext">
-            <span>Building our sanctuary together</span>
-          </p>
+          <p class="text-xs text-slate-500" id="headerSubtext">Append-only daily journal</p>
         </div>
       </div>
 
-      <!-- Action Buttons (Sync + PIN Lock/Unlock) -->
+      <!-- Action Controls -->
       <div class="flex items-center space-x-2">
         <!-- Manual Sync Button -->
-        <button id="refreshBtn" onclick="fetchInitialData(true)" title="Sync Data with Google Sheets" class="p-2.5 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-all active:scale-95">
+        <button id="refreshBtn" onclick="fetchInitialData(true)" title="Sync with Google Sheets"
+          class="p-2.5 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-all active:scale-95">
           <i class="fa-solid fa-arrows-rotate text-sm" id="refreshIcon"></i>
         </button>
 
         <!-- Lock / Unlock PIN Toggle -->
-        <button id="lockToggleBtn" onclick="handleLockToggle()" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-all active:scale-95 shadow-xs">
+        <button id="lockToggleBtn" onclick="handleLockToggle()"
+          class="flex items-center space-x-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-all active:scale-95 shadow-xs">
           <i id="lockIcon" class="fa-solid fa-lock text-rose-500"></i>
           <span id="lockButtonText" class="hidden sm:inline">Admin Access</span>
         </button>
@@ -154,173 +155,171 @@
     </div>
 
     <!-- Admin Navigation Tabs (Only visible when Husband PIN is unlocked) -->
-    <div id="adminNavTabs" class="hidden max-w-4xl mx-auto px-4 border-t border-slate-100 flex overflow-x-auto space-x-1 py-1.5 text-xs font-semibold scrollbar-none">
-      <button onclick="switchAdminTab('entry')" id="tabBtn-entry" class="admin-tab-btn px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-xs transition-all">
-        <i class="fa-solid fa-plus-circle mr-1.5"></i> Daily Entry & Goals
+    <div id="adminNavTabs"
+      class="hidden max-w-4xl mx-auto px-4 border-t border-slate-100 flex overflow-x-auto space-x-1 py-1.5 text-xs font-semibold scrollbar-none">
+      <button onclick="switchAdminTab('entry')" id="tabBtn-entry"
+        class="admin-tab-btn px-3 py-1.5 rounded-lg bg-blue-600 text-white shadow-xs transition-all">
+        <i class="fa-solid fa-plus-circle mr-1.5"></i> Daily Entry & Overview
       </button>
-      <button onclick="switchAdminTab('debts')" id="tabBtn-debts" class="admin-tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
-        <i class="fa-solid fa-chart-pie mr-1.5 text-amber-500"></i> Debt Snowball
+      <button onclick="switchAdminTab('loans')" id="tabBtn-loans"
+        class="admin-tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <i class="fa-solid fa-shield-halved mr-1.5 text-rose-500"></i> Loan Manager
       </button>
-      <button onclick="switchAdminTab('business')" id="tabBtn-business" class="admin-tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
-        <i class="fa-solid fa-briefcase mr-1.5 text-blue-500"></i> Assignments Hub
+      <button onclick="switchAdminTab('goals')" id="tabBtn-goals"
+        class="admin-tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <i class="fa-solid fa-gem mr-1.5 text-amber-500"></i> Goals Config
       </button>
-      <button onclick="switchAdminTab('reconcile')" id="tabBtn-reconcile" class="admin-tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
-        <i class="fa-solid fa-scale-balanced mr-1.5 text-emerald-500"></i> Bank Audit
+      <button onclick="switchAdminTab('business')" id="tabBtn-business"
+        class="admin-tab-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <i class="fa-solid fa-briefcase mr-1.5 text-blue-500"></i> Business & Audit
       </button>
     </div>
   </header>
 
   <!-- ========================================================================= -->
-  <!-- MAIN CONTAINER                                                            -->
+  <!-- MAIN WRAPPER                                                              -->
   <!-- ========================================================================= -->
   <main class="max-w-4xl mx-auto px-4 pt-5 pb-12 space-y-6">
 
     <!-- ======================================================================= -->
-    <!-- VIEW 1: DAILY ENTRY & SHARED GOALS (Default: Wife Mode / Append-Only)   -->
+    <!-- 2. MOTIVATIONAL ROADMAP (Visible in Both Modes)                         -->
+    <!-- ======================================================================= -->
+    <section
+      class="rounded-3xl p-5 sm:p-6 bg-gradient-to-r from-emerald-900 via-slate-900 to-indigo-950 text-white shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-8 -top-8 w-44 h-44 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        <!-- Header Affirmation -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+          <div class="flex items-center space-x-2">
+            <span
+              class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500 text-slate-950">
+              Our 2-Phase Journey
+            </span>
+            <span class="text-xs text-slate-300 font-medium" id="todayDateStr">Today</span>
+          </div>
+          <p class="text-xs text-emerald-300 font-semibold italic flex items-center">
+            <i class="fa-solid fa-sparkles mr-1.5"></i>
+            <span id="rotatingAffirmation">Every Rupee tracked is a step closer to our wedding and dream home! ✨</span>
+          </p>
+        </div>
+
+        <!-- 2 Phases Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+
+          <!-- Phase 1: Zero-Debt Freedom (Active Priority) -->
+          <div class="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-emerald-400/30 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span
+                  class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">
+                  1
+                </span>
+                <div>
+                  <h3 class="font-extrabold text-sm sm:text-base text-white">Phase 1: Zero-Debt Freedom 🛡️</h3>
+                  <p class="text-[11px] text-emerald-300 font-semibold">Active Priority (Freedom Target: LKR 1,187,000)
+                  </p>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-400 text-slate-950"
+                id="phase1PercentBadge">
+                21% Cleared
+              </span>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
+              <div id="phase1ProgressBar"
+                class="bg-gradient-to-r from-emerald-400 to-teal-300 h-full rounded-full transition-all duration-700"
+                style="width: 21%"></div>
+            </div>
+
+            <div class="flex justify-between text-[11px] text-slate-300">
+              <span id="phase1PaidText">Paid: LKR 255,000</span>
+              <span class="text-rose-300 font-semibold" id="phase1RemainingText">Remaining: LKR 932,000</span>
+            </div>
+          </div>
+
+          <!-- Phase 2: Dream Wedding & Future Home (Unlocks after Phase 1) -->
+          <div class="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 space-y-2.5 opacity-95">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span
+                  class="w-7 h-7 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold">
+                  2
+                </span>
+                <div>
+                  <h3 class="font-extrabold text-sm sm:text-base text-white">Phase 2: Wedding & Dream Home 💍🏡</h3>
+                  <p class="text-[11px] text-amber-300 font-semibold">Shared Goals (Pool: LKR 4,500,000)</p>
+                </div>
+              </div>
+              <span
+                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                Ready to Accelerate
+              </span>
+            </div>
+
+            <!-- Goals Mini Progress -->
+            <div class="grid grid-cols-2 gap-2 pt-1 text-xs">
+              <div class="bg-white/5 p-2 rounded-xl border border-white/5">
+                <p class="text-[10px] text-slate-400 uppercase font-bold">💍 Wedding Fund</p>
+                <p class="font-bold text-white mt-0.5" id="miniWeddingSaved">LKR 0 / 1.5M</p>
+              </div>
+              <div class="bg-white/5 p-2 rounded-xl border border-white/5">
+                <p class="text-[10px] text-slate-400 uppercase font-bold">🏡 Home Fund</p>
+                <p class="font-bold text-white mt-0.5" id="miniHomeSaved">LKR 0 / 3.0M</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- SECTION: DAILY TRANSACTION ENTRY & CHARTS (Default View)               -->
     <!-- ======================================================================= -->
     <div id="section-entry" class="fade-enter space-y-6">
 
-      <!-- Emotional & Uplifting Hero Banner -->
-      <div class="relative overflow-hidden rounded-3xl p-5 sm:p-6 bg-gradient-to-r from-rose-100/90 via-amber-50 to-pink-100/70 border border-rose-200/60 shadow-xs">
-        <div class="absolute -right-6 -bottom-6 text-rose-200/50 text-8xl pointer-events-none font-romantic">
-          💍
-        </div>
-        <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div class="space-y-1.5 max-w-xl">
-            <div class="flex items-center space-x-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-rose-500 text-white shadow-xs">
-                Our Shared Dream
-              </span>
-              <span class="text-xs font-semibold text-rose-700/80" id="currentDateFormatted">Today</span>
-            </div>
-            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight" id="personalGreeting">
-              Building our future together step by step 💍🏡
-            </h2>
-            <p class="text-xs sm:text-sm text-slate-600 font-medium italic" id="motivationalQuote">
-              "Every Rupee saved is an investment in our wedding & dream home! ✨"
-            </p>
-          </div>
-          <div class="shrink-0 flex items-center space-x-2 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-rose-200/60 shadow-2xs">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-            <span class="text-xs font-bold text-slate-700">Team Us: Safe & Append-Only</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- MODULE: "OUR FUTURE GOALS" (Shared Milestones - Visible in Both Modes) -->
-      <!-- ===================================================================== -->
-      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-rose-100 shadow-sm space-y-5">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div class="flex items-center space-x-2.5">
-            <div class="w-9 h-9 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-base font-bold shadow-xs">
-              <i class="fa-solid fa-gem"></i>
-            </div>
-            <div>
-              <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">Our Future Goals</h3>
-              <p class="text-xs text-slate-500">Shared milestones we are achieving hand-in-hand</p>
-            </div>
-          </div>
-          <span class="text-xs font-bold px-3 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200/60">
-            Milestones ✨
-          </span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          
-          <!-- Milestone 1: Wedding Fund -->
-          <div class="p-4 sm:p-5 rounded-2xl border border-rose-100 bg-gradient-to-br from-rose-50/50 via-white to-amber-50/30 glow-rose space-y-3">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-2.5">
-                <span class="text-2xl">💍</span>
-                <div>
-                  <h4 class="font-bold text-slate-900 text-sm sm:text-base">Our Dream Wedding Fund</h4>
-                  <p class="text-[11px] text-slate-500">Target: LKR 1,500,000</p>
-                </div>
-              </div>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-rose-500 text-white shadow-xs" id="weddingFundPercent">
-                32%
-              </span>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="space-y-1">
-              <div class="w-full bg-rose-100/70 rounded-full h-3 overflow-hidden p-0.5">
-                <div id="weddingFundProgressBar" class="bg-gradient-to-r from-rose-500 to-amber-400 h-full rounded-full transition-all duration-1000" style="width: 32%"></div>
-              </div>
-              <div class="flex justify-between text-[11px] font-semibold text-slate-600 pt-0.5">
-                <span id="weddingFundSaved">Saved: LKR 480,000</span>
-                <span class="text-rose-600" id="weddingFundRemaining">Needed: LKR 1,020,000</span>
-              </div>
-            </div>
-            <p class="text-[11px] text-rose-800/80 italic font-medium">✨ "A celebration of love, surrounded by blessings"</p>
-          </div>
-
-          <!-- Milestone 2: Future Home Fund -->
-          <div class="p-4 sm:p-5 rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50/50 via-white to-emerald-50/30 glow-gold space-y-3">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-2.5">
-                <span class="text-2xl">🏡</span>
-                <div>
-                  <h4 class="font-bold text-slate-900 text-sm sm:text-base">Our Future Home Fund</h4>
-                  <p class="text-[11px] text-slate-500">Target: LKR 3,000,000</p>
-                </div>
-              </div>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-600 text-white shadow-xs" id="homeFundPercent">
-                18%
-              </span>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="space-y-1">
-              <div class="w-full bg-amber-100/70 rounded-full h-3 overflow-hidden p-0.5">
-                <div id="homeFundProgressBar" class="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-1000" style="width: 18%"></div>
-              </div>
-              <div class="flex justify-between text-[11px] font-semibold text-slate-600 pt-0.5">
-                <span id="homeFundSaved">Saved: LKR 540,000</span>
-                <span class="text-amber-700" id="homeFundRemaining">Needed: LKR 2,460,000</span>
-              </div>
-            </div>
-            <p class="text-[11px] text-amber-900/80 italic font-medium">🏡 "Our peaceful sanctuary where love grows every single day"</p>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- QUICK TRANSACTION FORM (Wife Mode / Daily Entry)                      -->
-      <!-- ===================================================================== -->
+      <!-- Quick Transaction Entry Card -->
       <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm relative overflow-hidden">
         <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-100">
           <div class="flex items-center space-x-2.5">
-            <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-sm font-bold">
-              <i class="fa-solid fa-receipt"></i>
+            <div
+              class="w-9 h-9 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold">
+              <i class="fa-solid fa-plus"></i>
             </div>
             <div>
-              <h3 class="font-bold text-slate-900 text-base sm:text-lg">Quick Transaction Entry</h3>
-              <p class="text-xs text-slate-400">Log daily expenses without worry or stress</p>
+              <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Daily Transaction Entry</h2>
+              <p class="text-xs text-slate-400">Strictly append-only record directly to Google Sheets</p>
             </div>
           </div>
-          <span class="text-xs font-medium text-slate-400" id="entryDateBadge">Today</span>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600"
+            id="currentDayBadge">Today</span>
         </div>
 
         <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
-          
+
           <!-- Transaction Type Toggle (Expense / Income) -->
           <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Transaction Type</label>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Type</label>
             <div class="grid grid-cols-2 gap-3 p-1.5 bg-slate-100 rounded-2xl">
               <label class="cursor-pointer">
-                <input type="radio" name="type" value="Expense" checked class="peer sr-only" onchange="updateTypeTheme('Expense')">
-                <div class="w-full py-2.5 text-center rounded-xl font-bold text-sm text-slate-600 peer-checked:bg-white peer-checked:text-rose-600 peer-checked:shadow-sm transition-all flex items-center justify-center space-x-2">
+                <input type="radio" name="type" value="Expense" checked class="peer sr-only"
+                  onchange="updateTypeTheme('Expense')">
+                <div
+                  class="w-full py-2.5 text-center rounded-xl font-bold text-sm text-slate-600 peer-checked:bg-white peer-checked:text-rose-600 peer-checked:shadow-sm transition-all flex items-center justify-center space-x-2">
                   <i class="fa-solid fa-arrow-down text-rose-500"></i>
                   <span>Expense</span>
                 </div>
               </label>
 
               <label class="cursor-pointer">
-                <input type="radio" name="type" value="Income" class="peer sr-only" onchange="updateTypeTheme('Income')">
-                <div class="w-full py-2.5 text-center rounded-xl font-bold text-sm text-slate-600 peer-checked:bg-white peer-checked:text-emerald-600 peer-checked:shadow-sm transition-all flex items-center justify-center space-x-2">
+                <input type="radio" name="type" value="Income" class="peer sr-only"
+                  onchange="updateTypeTheme('Income')">
+                <div
+                  class="w-full py-2.5 text-center rounded-xl font-bold text-sm text-slate-600 peer-checked:bg-white peer-checked:text-emerald-600 peer-checked:shadow-sm transition-all flex items-center justify-center space-x-2">
                   <i class="fa-solid fa-arrow-up text-emerald-500"></i>
                   <span>Income</span>
                 </div>
@@ -330,42 +329,34 @@
 
           <!-- Amount Input (Large & Clear) -->
           <div>
-            <label for="amountInput" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Amount (LKR) *</label>
+            <label for="amountInput" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Amount
+              (LKR) *</label>
             <div class="relative rounded-2xl shadow-xs">
-              <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 font-bold text-base sm:text-lg">
+              <div
+                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 font-bold text-base sm:text-lg">
                 Rs.
               </div>
-              <input
-                type="number"
-                step="0.01"
-                min="1"
-                id="amountInput"
-                required
-                placeholder="0.00"
-                class="block w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3.5 pl-12 pr-4 text-2xl sm:text-3xl font-extrabold text-slate-900 placeholder:text-slate-300 focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-hidden transition-all"
-              />
+              <input type="number" step="0.01" min="1" id="amountInput" required placeholder="0.00"
+                class="block w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3.5 pl-12 pr-4 text-2xl sm:text-3xl font-extrabold text-slate-900 placeholder:text-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-hidden transition-all" />
             </div>
-            <p id="amountFormattedPreview" class="text-xs text-rose-500 mt-1 pl-1 font-semibold"></p>
+            <p id="amountFormattedPreview" class="text-xs text-emerald-600 mt-1 pl-1 font-semibold"></p>
           </div>
 
           <!-- Category & Account Grid -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            
+
             <!-- Category Dropdown -->
             <div>
-              <label for="categorySelect" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Category *</label>
+              <label for="categorySelect"
+                class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Category *</label>
               <div class="relative">
-                <select
-                  id="categorySelect"
-                  required
-                  class="w-full appearance-none rounded-2xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-10 text-sm font-semibold text-slate-800 focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-hidden transition-all"
-                >
+                <select id="categorySelect" required
+                  class="w-full appearance-none rounded-2xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-10 text-sm font-semibold text-slate-800 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-hidden transition-all">
                   <option value="" disabled selected>Select Category</option>
                   <option value="Food & Groceries">🍔 Food & Groceries</option>
                   <option value="Rent & Utility Bills">💡 Rent & Utility Bills</option>
                   <option value="Transport">🚗 Transport</option>
                   <option value="Campus & Practicals">🎓 Campus & Practicals</option>
-                  <option value="Medical">💊 Medical</option>
                   <option value="Loan Repayment">💳 Loan Repayment</option>
                   <option value="Other">✨ Other</option>
                 </select>
@@ -377,17 +368,16 @@
 
             <!-- Account Dropdown -->
             <div>
-              <label for="accountSelect" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Paid Through Account *</label>
+              <label for="accountSelect"
+                class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Paid Through Account
+                *</label>
               <div class="relative">
-                <select
-                  id="accountSelect"
-                  required
-                  class="w-full appearance-none rounded-2xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-10 text-sm font-semibold text-slate-800 focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-hidden transition-all"
-                >
-                  <option value="" disabled selected>Select Bank / Wallet</option>
-                  <option value="HNB (Acc: 122020268397)">HNB (Acc: 122020268397)</option>
-                  <option value="Commercial Bank (Acc: 8020898065)">Commercial Bank (Acc: 8020898065)</option>
-                  <option value="Union Bank (Acc: 0270201000114795)">Union Bank (Acc: 0270201000114795)</option>
+                <select id="accountSelect" required
+                  class="w-full appearance-none rounded-2xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-10 text-sm font-semibold text-slate-800 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-hidden transition-all">
+                  <option value="" disabled selected>Select Bank Account</option>
+                  <option value="HNB (122020268397)">HNB (122020268397)</option>
+                  <option value="Commercial Bank (8020898065)">Commercial Bank (8020898065)</option>
+                  <option value="Union Bank (0270201000114795)">Union Bank (0270201000114795)</option>
                   <option value="Cash in Hand">💵 Cash in Hand</option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
@@ -398,51 +388,43 @@
 
           </div>
 
-          <!-- Note / Description -->
+          <!-- Note / Remarks -->
           <div>
-            <label for="noteInput" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Note / Description (Optional)</label>
+            <label for="noteInput" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Note /
+              Remarks (Optional)</label>
             <div class="relative">
-              <input
-                type="text"
-                id="noteInput"
-                placeholder="e.g. Keells grocery, pharmacy, medicine, bus ride..."
-                class="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-4 text-sm font-medium text-slate-800 focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-hidden transition-all"
-              />
+              <input type="text" id="noteInput"
+                placeholder="e.g. Weekly supermarket, pharmacy, laboratory manual prints..."
+                class="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-4 text-sm font-medium text-slate-800 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-hidden transition-all" />
             </div>
           </div>
 
-          <!-- ================================================================= -->
-          <!-- RECEIPT ATTACHMENT (FIXED BUG: STANDARD FILE PICKER WITH PREVIEW) -->
-          <!-- ================================================================= -->
+          <!-- Mobile Attachment (Standard input to allow Camera OR Gallery/Screenshots) -->
           <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
               Receipt / Bill Photo (Camera, Gallery, or Screenshot)
             </label>
             <div class="flex flex-col sm:flex-row items-center gap-3">
-              <label class="flex-1 w-full flex items-center justify-center space-x-2 border-2 border-dashed border-slate-200 hover:border-rose-400 bg-slate-50/50 hover:bg-rose-50/40 rounded-2xl p-4 cursor-pointer transition-all group">
-                <i class="fa-solid fa-image text-slate-400 group-hover:text-rose-500 text-lg transition-colors"></i>
-                <span class="text-xs sm:text-sm font-semibold text-slate-600 group-hover:text-rose-600 transition-colors" id="receiptFileName">
+              <label
+                class="flex-1 w-full flex items-center justify-center space-x-2 border-2 border-dashed border-slate-200 hover:border-emerald-400 bg-slate-50/50 hover:bg-emerald-50/40 rounded-2xl p-4 cursor-pointer transition-all group">
+                <i class="fa-solid fa-image text-slate-400 group-hover:text-emerald-600 text-lg transition-colors"></i>
+                <span
+                  class="text-xs sm:text-sm font-semibold text-slate-600 group-hover:text-emerald-700 transition-colors"
+                  id="receiptFileName">
                   Choose Photo / Camera / File
                 </span>
-                <!-- FIXED: Standard accept="image/*" without capture="environment" to allow full OS picker -->
-                <input
-                  type="file"
-                  id="receiptInput"
-                  accept="image/*"
-                  class="hidden"
-                  onchange="handleImageSelection(event)"
-                />
+                <!-- FIXED: Standard accept="image/*" without capture attribute -->
+                <input type="file" id="receiptInput" accept="image/*" class="hidden"
+                  onchange="handleImageSelection(event)" />
               </label>
 
               <!-- Image Preview Thumbnail -->
-              <div id="imagePreviewContainer" class="hidden relative rounded-2xl overflow-hidden border-2 border-rose-200 h-16 w-16 shrink-0 shadow-xs">
+              <div id="imagePreviewContainer"
+                class="hidden relative rounded-2xl overflow-hidden border-2 border-emerald-200 h-16 w-16 shrink-0 shadow-xs">
                 <img id="imagePreview" src="" alt="Receipt Preview" class="h-full w-full object-cover" />
-                <button
-                  type="button"
-                  onclick="clearImageSelection()"
+                <button type="button" onclick="clearImageSelection()"
                   class="absolute top-1 right-1 w-5 h-5 rounded-full bg-slate-900/80 hover:bg-rose-600 text-white text-[10px] flex items-center justify-center transition-colors"
-                  title="Remove image"
-                >
+                  title="Remove image">
                   <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
@@ -451,12 +433,9 @@
 
           <!-- Submit Button -->
           <div class="pt-2">
-            <button
-              type="submit"
-              id="submitBtn"
-              class="w-full py-4 px-6 rounded-2xl font-bold text-white text-base tracking-wide bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 hover:from-rose-600 hover:to-pink-600 active:scale-[0.99] shadow-lg shadow-rose-500/25 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-70 disabled:pointer-events-none"
-            >
-              <i class="fa-solid fa-heart mr-1.5" id="submitIcon"></i>
+            <button type="submit" id="submitBtn"
+              class="w-full py-4 px-6 rounded-2xl font-bold text-white text-base tracking-wide bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-700 active:scale-[0.99] shadow-lg shadow-emerald-600/25 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-70 disabled:pointer-events-none">
+              <i class="fa-solid fa-paper-plane mr-1" id="submitIcon"></i>
               <span id="submitText">Submit Transaction</span>
             </button>
           </div>
@@ -465,23 +444,24 @@
       </div>
 
       <!-- ===================================================================== -->
-      <!-- INTERACTIVE VISUAL ANALYTICS (CHART.JS)                               -->
+      <!-- 4. INTERACTIVE VISUAL CHARTS (Chart.js)                               -->
       <!-- ===================================================================== -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        
-        <!-- Chart 1: Expense Breakdown (Doughnut Chart) -->
+
+        <!-- Chart 1: Expense Category Breakdown (Doughnut) -->
         <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
-              <h3 class="font-bold text-slate-900 text-base">Expense Breakdown</h3>
-              <p class="text-xs text-slate-400">See where our money goes peacefully</p>
+              <h3 class="font-extrabold text-slate-900 text-base">Expense Breakdown</h3>
+              <p class="text-xs text-slate-400">Category spending distribution</p>
             </div>
-            <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-xs font-bold">
+            <span
+              class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-xs font-bold">
               <i class="fa-solid fa-chart-pie"></i>
             </span>
           </div>
 
-          <div class="relative py-4 flex items-center justify-center min-h-[240px]">
+          <div class="relative py-3 flex items-center justify-center min-h-[240px]">
             <canvas id="expenseBreakdownChart" class="max-h-[220px]"></canvas>
           </div>
 
@@ -490,30 +470,31 @@
           </p>
         </div>
 
-        <!-- Chart 2: Debt Snowball Freedom Journey -->
+        <!-- Chart 2: Debt Freedom Payoff Progress (Horizontal Bar) -->
         <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
-              <h3 class="font-bold text-slate-900 text-base">Debt Snowball Freedom</h3>
-              <p class="text-xs text-slate-400">Every step brings us closer to financial freedom</p>
+              <h3 class="font-extrabold text-slate-900 text-base">Debt Freedom Journey</h3>
+              <p class="text-xs text-slate-400">Paid off vs remaining per loan</p>
             </div>
-            <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs font-bold">
-              <i class="fa-solid fa-mountain-sun"></i>
+            <span
+              class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs font-bold">
+              <i class="fa-solid fa-chart-column"></i>
             </span>
           </div>
 
-          <div class="relative py-4 flex items-center justify-center min-h-[240px]">
+          <div class="relative py-3 flex items-center justify-center min-h-[240px]">
             <canvas id="debtSnowballChart" class="max-h-[220px]"></canvas>
           </div>
 
-          <!-- Celebratory milestone badge -->
-          <div class="p-2.5 rounded-2xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-between text-xs">
-            <span class="font-bold text-emerald-800 flex items-center">
-              <i class="fa-solid fa-champagne-glasses text-emerald-600 mr-1.5"></i>
-              <span id="celebratoryBadgeText">LKR 255,000 Cleared So Far!</span>
+          <div
+            class="p-2 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-between text-xs">
+            <span class="font-bold text-emerald-800">
+              <i class="fa-solid fa-shield-heart text-emerald-600 mr-1.5"></i>
+              <span id="debtSummaryBadge">LKR 255k Settled So Far</span>
             </span>
-            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-emerald-600 text-white">
-              Keep Going 💕
+            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-emerald-600 text-white">
+              Zero Debt Priority
             </span>
           </div>
         </div>
@@ -521,27 +502,27 @@
       </div>
 
       <!-- ===================================================================== -->
-      <!-- RECENT SUBMISSIONS (Strictly Read-Only Append Feed for Wife View)     -->
+      <!-- RECENT SUBMISSIONS FEED (Strictly Read-Only Append for Wife View)     -->
       <!-- ===================================================================== -->
       <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm">
         <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
           <div class="flex items-center space-x-2.5">
-            <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-sm font-bold">
+            <div
+              class="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-sm font-bold">
               <i class="fa-solid fa-clock-rotate-left"></i>
             </div>
             <div>
               <h3 class="font-bold text-slate-900 text-base sm:text-lg">Recent Submissions</h3>
-              <p class="text-xs text-slate-400">Strictly append-only record from Google Sheets</p>
+              <p class="text-xs text-slate-400">Append-only record feed</p>
             </div>
           </div>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600" id="submissionCountBadge">0 entries</span>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600"
+            id="submissionCountBadge">0 entries</span>
         </div>
 
-        <!-- Transaction Feed List -->
         <div id="submissionsList" class="space-y-3">
-          <!-- Populated by JavaScript -->
           <div class="py-10 text-center text-slate-400">
-            <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-rose-400"></i>
+            <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-emerald-500"></i>
             <p class="text-sm">Fetching verified submissions...</p>
           </div>
         </div>
@@ -550,242 +531,103 @@
     </div>
 
     <!-- ======================================================================= -->
-    <!-- VIEW 2: HUSBAND MODE - DEBT SNOWBALL (Section A)                       -->
+    <!-- 5A. HUSBAND MODE: EDITABLE LOAN MANAGER (Section A)                     -->
     <!-- ======================================================================= -->
-    <div id="section-debts" class="hidden fade-enter space-y-6">
-      
-      <!-- Overall Debt Status Banner -->
-      <div class="p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white shadow-xl relative overflow-hidden">
-        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div class="flex items-center space-x-2 mb-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                Freedom Roadmap
-              </span>
-              <span class="text-xs text-slate-400">Husband Strategic Oversight</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight" id="debtTotalRemainingDisplay">LKR 932,000</h2>
-            <p class="text-xs text-slate-300 mt-1">Total Outstanding Debt Pool (Target: LKR 1,187,000)</p>
-          </div>
+    <div id="section-loans" class="hidden fade-enter space-y-6">
 
-          <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 min-w-[220px]">
-            <div class="flex justify-between text-xs font-semibold mb-1.5">
-              <span class="text-slate-300">Total Settled</span>
-              <span class="text-emerald-400 font-bold" id="debtTotalSettledDisplay">LKR 255,000 (21%)</span>
-            </div>
-            <div class="w-full bg-slate-700/80 rounded-full h-3 overflow-hidden p-0.5">
-              <div id="overallDebtProgressBar" class="bg-gradient-to-r from-emerald-400 to-teal-300 h-full rounded-full transition-all duration-700" style="width: 21%"></div>
-            </div>
-            <p class="text-[11px] text-slate-400 mt-2 text-right">Freedom Target: Zero Debt</p>
-          </div>
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">Loan Manager & Freedom Strategy</h2>
+          <p class="text-xs text-slate-500">Update live loan balances and payoff targets</p>
         </div>
+        <button onclick="openEditLoansModal()"
+          class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-all flex items-center space-x-1.5 active:scale-95">
+          <i class="fa-solid fa-pen-to-square text-xs"></i>
+          <span>Edit Loans</span>
+        </button>
       </div>
 
-      <!-- Individual Debt Cards Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        
-        <!-- 1. Credit Card (High Priority) -->
-        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm relative overflow-hidden">
-          <div class="flex items-start justify-between">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg">
-                <i class="fa-solid fa-credit-card"></i>
-              </div>
-              <div>
-                <h4 class="font-bold text-slate-900 text-base">Credit Card</h4>
-                <p class="text-xs text-slate-500">Commercial / HNB Active</p>
-              </div>
-            </div>
-            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500 text-white shadow-xs">
-              <i class="fa-solid fa-fire mr-1"></i> High Priority
-            </span>
-          </div>
-
-          <div class="mt-4 pt-3 border-t border-slate-100 flex items-end justify-between">
-            <div>
-              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Amount</p>
-              <p class="text-lg font-black text-slate-800">LKR 350,000</p>
-            </div>
-            <div class="text-right">
-              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Settled</p>
-              <p class="text-sm font-bold text-emerald-600">LKR 45,000 (13%)</p>
-            </div>
-          </div>
-
-          <div class="mt-3">
-            <div class="w-full bg-slate-100 rounded-full h-2">
-              <div class="bg-rose-500 h-2 rounded-full" style="width: 13%"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. Dad's Loan -->
-        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
-          <div class="flex items-start justify-between">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg">
-                <i class="fa-solid fa-hand-holding-dollar"></i>
-              </div>
-              <div>
-                <h4 class="font-bold text-slate-900 text-base">Dad's Loan</h4>
-                <p class="text-xs text-slate-500">Family Assistance</p>
-              </div>
-            </div>
-            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-800">
-              Medium
-            </span>
-          </div>
-
-          <div class="mt-4 pt-3 border-t border-slate-100 flex items-end justify-between">
-            <div>
-              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Amount</p>
-              <p class="text-lg font-black text-slate-800">LKR 380,000</p>
-            </div>
-            <div class="text-right">
-              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Settled</p>
-              <p class="text-sm font-bold text-amber-600">LKR 60,000 (16%)</p>
-            </div>
-          </div>
-
-          <div class="mt-3">
-            <div class="w-full bg-slate-100 rounded-full h-2">
-              <div class="bg-amber-500 h-2 rounded-full" style="width: 16%"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Husband's Loan -->
-        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
-          <div class="flex items-start justify-between">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
-                <i class="fa-solid fa-handshake"></i>
-              </div>
-              <div>
-                <h4 class="font-bold text-slate-900 text-base">Husband's Loan</h4>
-                <p class="text-xs text-slate-500">Internal Support</p>
-              </div>
-            </div>
-            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-100 text-blue-800">
-              Medium
-            </span>
-          </div>
-
-          <div class="mt-4 pt-3 border-t border-slate-100 flex items-end justify-between">
-            <div>
-              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Amount</p>
-              <p class="text-lg font-black text-slate-800">LKR 357,000</p>
-            </div>
-            <div class="text-right">
-              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Settled</p>
-              <p class="text-sm font-bold text-blue-600">LKR 120,000 (34%)</p>
-            </div>
-          </div>
-
-          <div class="mt-3">
-            <div class="w-full bg-slate-100 rounded-full h-2">
-              <div class="bg-blue-500 h-2 rounded-full" style="width: 34%"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. Mom's Loan -->
-        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
-          <div class="flex items-start justify-between">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg">
-                <i class="fa-solid fa-heart-pulse"></i>
-              </div>
-              <div>
-                <h4 class="font-bold text-slate-900 text-base">Mom's Loan</h4>
-                <p class="text-xs text-slate-500">Family Advance</p>
-              </div>
-            </div>
-            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800">
-              Flexible
-            </span>
-          </div>
-
-          <div class="mt-4 pt-3 border-t border-slate-100 flex items-end justify-between">
-            <div>
-              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Amount</p>
-              <p class="text-lg font-black text-slate-800">LKR 100,000</p>
-            </div>
-            <div class="text-right">
-              <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Settled</p>
-              <p class="text-sm font-bold text-emerald-600">LKR 30,000 (30%)</p>
-            </div>
-          </div>
-
-          <div class="mt-3">
-            <div class="w-full bg-slate-100 rounded-full h-2">
-              <div class="bg-emerald-500 h-2 rounded-full" style="width: 30%"></div>
-            </div>
-          </div>
-        </div>
-
+      <!-- Loan Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="loansCardsContainer">
+        <!-- Dynamically rendered -->
       </div>
 
     </div>
 
     <!-- ======================================================================= -->
-    <!-- VIEW 3: HUSBAND MODE - ASSIGNMENTS BUSINESS (Section B)                 -->
+    <!-- 5B. HUSBAND MODE: EDITABLE GOALS MANAGER (Section B)                     -->
     <!-- ======================================================================= -->
-    <div id="section-business" class="hidden fade-enter space-y-6">
-      
+    <div id="section-goals" class="hidden fade-enter space-y-6">
+
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-xl font-extrabold text-slate-900">Assignment Writing Business</h2>
-          <p class="text-xs text-slate-500">Confidential earnings, client receivables, and profit margins</p>
+          <h2 class="text-xl font-extrabold text-slate-900">Shared Goals & Milestones</h2>
+          <p class="text-xs text-slate-500">Configure wedding & dream home fund targets anytime</p>
+        </div>
+        <button onclick="openConfigureGoalsModal()"
+          class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition-all flex items-center space-x-1.5 active:scale-95">
+          <i class="fa-solid fa-sliders text-xs"></i>
+          <span>Configure Goals</span>
+        </button>
+      </div>
+
+      <!-- Goals Cards Container -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="goalsCardsContainer">
+        <!-- Rendered dynamically -->
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- 5C. HUSBAND MODE: ASSIGNMENTS & RECONCILIATION AUDIT (Section C)        -->
+    <!-- ======================================================================= -->
+    <div id="section-business" class="hidden fade-enter space-y-6">
+
+      <!-- Business Revenue Header -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">Assignment Business & Bank Audit</h2>
+          <p class="text-xs text-slate-500">Husband-only revenue metrics and reconciliation tool</p>
         </div>
         <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
-          <i class="fa-solid fa-lock text-xs mr-1"></i> Private
+          <i class="fa-solid fa-lock text-xs mr-1"></i> Confidential
         </span>
       </div>
 
-      <!-- Financial Metrics Cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        
+      <!-- Metric Cards -->
+      <div class="grid grid-cols-3 gap-3 sm:gap-4">
+
         <!-- Total Revenue -->
         <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs">
-          <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold mb-3">
+          <div
+            class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold mb-2">
             <i class="fa-solid fa-coins"></i>
           </div>
           <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Revenue</p>
           <p class="text-base sm:text-xl font-extrabold text-slate-900 mt-1">LKR 420,000</p>
           <span class="text-[10px] text-emerald-600 font-semibold flex items-center mt-1">
-            <i class="fa-solid fa-arrow-trend-up mr-1"></i> Billed Contracts
-          </span>
-        </div>
-
-        <!-- Receivables -->
-        <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs">
-          <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold mb-3">
-            <i class="fa-solid fa-hourglass-half"></i>
-          </div>
-          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Receivables</p>
-          <p class="text-base sm:text-xl font-extrabold text-amber-600 mt-1">LKR 85,000</p>
-          <span class="text-[10px] text-slate-500 font-semibold flex items-center mt-1">
-            Pending Collection
+            <i class="fa-solid fa-arrow-trend-up mr-1"></i> Billed
           </span>
         </div>
 
         <!-- Business Expenses -->
         <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs">
-          <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm font-bold mb-3">
+          <div
+            class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm font-bold mb-2">
             <i class="fa-solid fa-wallet"></i>
           </div>
           <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Expenses</p>
           <p class="text-base sm:text-xl font-extrabold text-rose-600 mt-1">LKR 48,000</p>
           <span class="text-[10px] text-slate-500 font-semibold flex items-center mt-1">
-            Tools & Freelance
+            Tools & Support
           </span>
         </div>
 
         <!-- Net Profit -->
-        <div class="bg-white rounded-3xl p-4 sm:p-5 border border-emerald-200/80 bg-gradient-to-b from-white to-emerald-50/30 shadow-xs">
-          <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold mb-3">
+        <div
+          class="bg-white rounded-3xl p-4 sm:p-5 border border-emerald-200/80 bg-gradient-to-b from-white to-emerald-50/30 shadow-xs">
+          <div
+            class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold mb-2">
             <i class="fa-solid fa-sack-dollar"></i>
           </div>
           <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Net Profit</p>
@@ -797,80 +639,25 @@
 
       </div>
 
-      <!-- Assignments Table -->
-      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm overflow-hidden">
-        <div class="flex items-center justify-between pb-4 mb-3 border-b border-slate-100">
-          <h3 class="font-bold text-slate-900 text-base">Active Projects & Deadlines</h3>
-          <span class="text-xs text-slate-400 font-medium">Auto-synced with Assignments sheet</span>
+      <!-- Bank Reconciliation Calculator -->
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base">Monthly Bank Reconciliation</h3>
+            <p class="text-xs text-slate-400">Compare actual bank balances against expected system balance</p>
+          </div>
+          <button onclick="recalculateReconciliation()"
+            class="px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-all flex items-center space-x-1">
+            <i class="fa-solid fa-calculator text-xs"></i>
+            <span>Calculate Variances</span>
+          </button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs">
             <thead>
               <tr class="text-slate-400 uppercase tracking-wider border-b border-slate-100">
-                <th class="py-3 px-3 font-bold">Project / Topic</th>
-                <th class="py-3 px-3 font-bold">Client</th>
-                <th class="py-3 px-3 font-bold">Total Fee</th>
-                <th class="py-3 px-3 font-bold">Advance</th>
-                <th class="py-3 px-3 font-bold">Balance</th>
-                <th class="py-3 px-3 font-bold">Status</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
-              <tr class="hover:bg-slate-50/80">
-                <td class="py-3.5 px-3 font-bold text-slate-900">MBA Strategic Mgmt Thesis</td>
-                <td class="py-3.5 px-3">Dilshan K.</td>
-                <td class="py-3.5 px-3 font-semibold text-slate-900">LKR 95,000</td>
-                <td class="py-3.5 px-3 text-emerald-600">LKR 50,000</td>
-                <td class="py-3.5 px-3 text-amber-600 font-bold">LKR 45,000</td>
-                <td class="py-3.5 px-3"><span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-bold text-[10px]">In Progress</span></td>
-              </tr>
-              <tr class="hover:bg-slate-50/80">
-                <td class="py-3.5 px-3 font-bold text-slate-900">Health Informatics Review</td>
-                <td class="py-3.5 px-3">Nadeesha P.</td>
-                <td class="py-3.5 px-3 font-semibold text-slate-900">LKR 65,000</td>
-                <td class="py-3.5 px-3 text-emerald-600">LKR 65,000</td>
-                <td class="py-3.5 px-3 text-slate-400 font-bold">LKR 0</td>
-                <td class="py-3.5 px-3"><span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-bold text-[10px]">Delivered</span></td>
-              </tr>
-              <tr class="hover:bg-slate-50/80">
-                <td class="py-3.5 px-3 font-bold text-slate-900">Data Analytics Final Paper</td>
-                <td class="py-3.5 px-3">Kasun W.</td>
-                <td class="py-3.5 px-3 font-semibold text-slate-900">LKR 80,000</td>
-                <td class="py-3.5 px-3 text-emerald-600">LKR 40,000</td>
-                <td class="py-3.5 px-3 text-amber-600 font-bold">LKR 40,000</td>
-                <td class="py-3.5 px-3"><span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 font-bold text-[10px]">Review</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ======================================================================= -->
-    <!-- VIEW 4: HUSBAND MODE - BANK RECONCILIATION AUDIT (Section C)            -->
-    <!-- ======================================================================= -->
-    <div id="section-reconcile" class="hidden fade-enter space-y-6">
-      
-      <div class="flex items-center justify-between">
-        <div>
-          <h2 class="text-xl font-extrabold text-slate-900">Monthly Bank Reconciliation</h2>
-          <p class="text-xs text-slate-500">Cross-match actual online banking apps with system ledger</p>
-        </div>
-        <button onclick="recalculateReconciliation()" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-all flex items-center space-x-1">
-          <i class="fa-solid fa-calculator text-xs"></i>
-          <span>Auto Audit</span>
-        </button>
-      </div>
-
-      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="text-slate-400 uppercase tracking-wider border-b border-slate-100">
-                <th class="py-3 px-3 font-bold">Bank / Account</th>
-                <th class="py-3 px-3 font-bold">Holder</th>
+                <th class="py-3 px-3 font-bold">Bank Account</th>
                 <th class="py-3 px-3 font-bold">Expected Balance</th>
                 <th class="py-3 px-3 font-bold">Actual App Balance (Enter)</th>
                 <th class="py-3 px-3 font-bold">Variance</th>
@@ -878,23 +665,26 @@
               </tr>
             </thead>
             <tbody id="reconcileTableBody" class="divide-y divide-slate-100">
-              <!-- Reconcile rows dynamically populated -->
+              <!-- Dynamically populated -->
             </tbody>
           </table>
         </div>
 
-        <!-- Audit Action -->
-        <div class="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <!-- Reconciliation Action -->
+        <div
+          class="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div class="flex items-center space-x-3">
-            <div id="auditStatusIcon" class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
+            <div
+              class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-base">
               <i class="fa-solid fa-check-double"></i>
             </div>
             <div>
-              <h4 class="font-bold text-slate-900 text-sm">Monthly Books Audit</h4>
-              <p class="text-xs text-slate-500">Ensure every rupee is accounted for accurately.</p>
+              <h4 class="font-bold text-slate-900 text-xs">Audit Balance Record</h4>
+              <p class="text-[11px] text-slate-500">Confirm match between online banking and ledger.</p>
             </div>
           </div>
-          <button onclick="saveReconciliationSnapshot()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs tracking-wide transition-all shadow-xs flex items-center justify-center space-x-2">
+          <button onclick="saveReconciliationSnapshot()"
+            class="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs tracking-wide transition-all shadow-xs flex items-center justify-center space-x-2">
             <i class="fa-solid fa-check"></i>
             <span>Confirm Audit</span>
           </button>
@@ -906,24 +696,26 @@
   </main>
 
   <!-- ========================================================================= -->
-  <!-- PIN VERIFICATION MODAL (HUSBAND MODE SECURITY)                           -->
+  <!-- PIN VERIFICATION MODAL (HUSBAND ADMIN UNLOCK)                            -->
   <!-- ========================================================================= -->
-  <div id="pinModal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200 text-center relative fade-enter">
-      
-      <!-- Close Button -->
-      <button onclick="closePinModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+  <div id="pinModal"
+    class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div
+      class="bg-white w-full max-w-sm rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200 text-center relative fade-enter">
+
+      <button onclick="closePinModal()"
+        class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
         <i class="fa-solid fa-xmark text-base"></i>
       </button>
 
-      <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto text-xl mb-3 shadow-xs">
+      <div
+        class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto text-xl mb-3 shadow-xs">
         <i class="fa-solid fa-shield-halved"></i>
       </div>
 
-      <h3 class="font-extrabold text-slate-900 text-lg">Husband Mode Unlock</h3>
+      <h3 class="font-extrabold text-slate-900 text-lg">Husband Admin Unlock</h3>
       <p class="text-xs text-slate-500 mt-1 mb-6">Enter confidential 4-digit security PIN</p>
 
-      <!-- PIN Indicator Dots -->
       <div class="flex items-center justify-center space-x-4 mb-7" id="pinDotsContainer">
         <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-transparent"></div>
         <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-transparent"></div>
@@ -931,20 +723,32 @@
         <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-transparent"></div>
       </div>
 
-      <!-- Numeric Keypad for fast mobile typing -->
+      <!-- Numeric Keypad for fast touch screen usage -->
       <div class="grid grid-cols-3 gap-2.5 max-w-[260px] mx-auto mb-4">
-        <button type="button" onclick="handlePinKey('1')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">1</button>
-        <button type="button" onclick="handlePinKey('2')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">2</button>
-        <button type="button" onclick="handlePinKey('3')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">3</button>
-        <button type="button" onclick="handlePinKey('4')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">4</button>
-        <button type="button" onclick="handlePinKey('5')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">5</button>
-        <button type="button" onclick="handlePinKey('6')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">6</button>
-        <button type="button" onclick="handlePinKey('7')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">7</button>
-        <button type="button" onclick="handlePinKey('8')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">8</button>
-        <button type="button" onclick="handlePinKey('9')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">9</button>
-        <button type="button" onclick="clearPinInput()" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-semibold text-xs text-slate-600 transition-all">CLEAR</button>
-        <button type="button" onclick="handlePinKey('0')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">0</button>
-        <button type="button" onclick="handlePinBackspace()" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-bold text-slate-600 transition-all">
+        <button type="button" onclick="handlePinKey('1')"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">1</button>
+        <button type="button" onclick="handlePinKey('2')"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">2</button>
+        <button type="button" onclick="handlePinKey('3')"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">3</button>
+        <button type="button" onclick="handlePinKey('4')"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">4</button>
+        <button type="button" onclick="handlePinKey('5')"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">5</button>
+        <button type="button" onclick="handlePinKey('6')"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">6</button>
+        <button type="button" onclick="handlePinKey('7')"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">7</button>
+        <button type="button" onclick="handlePinKey('8')"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">8</button>
+        <button type="button" onclick="handlePinKey('9')"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">9</button>
+        <button type="button" onclick="clearPinInput()"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-semibold text-xs text-slate-600 transition-all">CLEAR</button>
+        <button type="button" onclick="handlePinKey('0')"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-extrabold text-lg text-slate-800 transition-all">0</button>
+        <button type="button" onclick="handlePinBackspace()"
+          class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 font-bold text-slate-600 transition-all">
           <i class="fa-solid fa-delete-left"></i>
         </button>
       </div>
@@ -954,9 +758,90 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- RECEIPT IMAGE PREVIEW MODAL                                              -->
+  <!-- MODAL: EDIT LOANS (HUSBAND ONLY)                                         -->
   <!-- ========================================================================= -->
-  <div id="receiptModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+  <div id="editLoansModal"
+    class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-200 relative fade-enter">
+
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+          <h3 class="font-extrabold text-slate-900 text-base">Edit Active Loans</h3>
+        </div>
+        <button onclick="closeEditLoansModal()" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="editLoansForm" onsubmit="handleSaveLoans(event)" class="space-y-4">
+        <p class="text-xs text-slate-500">Update current remaining balances for each loan:</p>
+
+        <div class="space-y-3" id="editLoansInputsContainer">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+          <button type="button" onclick="closeEditLoansModal()"
+            class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-semibold hover:bg-slate-50">
+            Cancel
+          </button>
+          <button type="submit" id="saveLoansBtn"
+            class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs">
+            Save Changes
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: CONFIGURE GOALS (HUSBAND ONLY)                                     -->
+  <!-- ========================================================================= -->
+  <div id="editGoalsModal"
+    class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-200 relative fade-enter">
+
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xs font-bold">
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+          <h3 class="font-extrabold text-slate-900 text-base">Configure Shared Goals</h3>
+        </div>
+        <button onclick="closeConfigureGoalsModal()" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="editGoalsForm" onsubmit="handleSaveGoals(event)" class="space-y-4">
+        <div class="space-y-4" id="editGoalsInputsContainer">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+          <button type="button" onclick="closeConfigureGoalsModal()"
+            class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-semibold hover:bg-slate-50">
+            Cancel
+          </button>
+          <button type="submit" id="saveGoalsBtn"
+            class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs">
+            Save Goals
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: RECEIPT VIEW                                                      -->
+  <!-- ========================================================================= -->
+  <div id="receiptModal"
+    class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-5 shadow-2xl relative fade-enter flex flex-col max-h-[90vh]">
       <div class="flex items-center justify-between pb-3 border-b border-slate-100">
         <h4 class="font-bold text-slate-900 text-sm">Receipt Attachment</h4>
@@ -965,10 +850,12 @@
         </button>
       </div>
       <div class="flex-1 overflow-auto py-3 text-center">
-        <img id="modalReceiptImg" src="" alt="Receipt" class="max-h-[65vh] mx-auto rounded-xl object-contain shadow-xs" />
+        <img id="modalReceiptImg" src="" alt="Receipt"
+          class="max-h-[65vh] mx-auto rounded-xl object-contain shadow-xs" />
       </div>
       <div class="pt-3 border-t border-slate-100 flex justify-end">
-        <a id="modalReceiptDriveLink" href="#" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center space-x-2 transition-colors">
+        <a id="modalReceiptDriveLink" href="#" target="_blank" rel="noopener noreferrer"
+          class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center space-x-2 transition-colors">
           <i class="fa-brands fa-google-drive"></i>
           <span>Open in Google Drive</span>
         </a>
@@ -977,7 +864,7 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- JAVASCRIPT APPLICATION CORE                                               -->
+  <!-- JAVASCRIPT LOGIC CORE                                                     -->
   <!-- ========================================================================= -->
   <script>
     // ==========================================
@@ -995,73 +882,72 @@
     let expenseChartInstance = null;
     let debtChartInstance = null;
 
-    // Inspirational rotating quotes for the Wife
-    const loveQuotes = [
-      "Every Rupee saved is an investment in our wedding & dream home! ✨",
-      "Building our sanctuary together step by step 💍🏡",
-      "Proud of you today and always, love! 💕",
-      "One goal, one heart, one beautiful future ahead 🕊️",
-      "Small daily efforts create our lifetime of happiness 🌸"
+    // Dynamic affirmations
+    const affirmations = [
+      "Every Rupee tracked is a step closer to our wedding and dream home! ✨",
+      "Building our sanctuary together with love and financial discipline 💍🏡",
+      "Freedom from debt brings peace to our hearts and home 🕊️",
+      "Proud of our teamwork today and every day 💕",
+      "Small daily investments create our extraordinary lifetime ahead 🌸"
     ];
 
-    // In-memory data store with realistic initial state
+    // Core In-Memory Application State
     let appState = {
+      loans: [
+        { id: "L01", LoanName: "Credit Card", TargetAmount: 350000, PaidAmount: 45000, Remaining: 305000, Priority: "High" },
+        { id: "L02", LoanName: "Dad's Loan", TargetAmount: 380000, PaidAmount: 60000, Remaining: 320000, Priority: "Medium" },
+        { id: "L03", LoanName: "Husband's Loan", TargetAmount: 357000, PaidAmount: 120000, Remaining: 237000, Priority: "Medium" },
+        { id: "L04", LoanName: "Mom's Loan", TargetAmount: 100000, PaidAmount: 30000, Remaining: 70000, Priority: "Low" }
+      ],
+      goals: [
+        { id: "G01", GoalName: "Our Dream Wedding", Icon: "💍", TargetAmount: 1500000, SavedAmount: 0 },
+        { id: "G02", GoalName: "Our Future House", Icon: "🏡", TargetAmount: 3000000, SavedAmount: 0 }
+      ],
       accounts: [
-        { AccountName: "HNB (Acc: 122020268397)", Bank: "HNB", AccNo: "122020268397", Balance: 45000, Owner: "Wife" },
-        { AccountName: "Commercial Bank (Acc: 8020898065)", Bank: "ComBank", AccNo: "8020898065", Balance: 28500, Owner: "Wife" },
-        { AccountName: "Union Bank (Acc: 0270201000114795)", Bank: "Union", AccNo: "0270201000114795", Balance: 12000, Owner: "Wife" },
+        { AccountName: "HNB (122020268397)", Bank: "HNB", AccNo: "122020268397", Balance: 45000, Owner: "Wife" },
+        { AccountName: "Commercial Bank (8020898065)", Bank: "ComBank", AccNo: "8020898065", Balance: 28500, Owner: "Wife" },
+        { AccountName: "Union Bank (0270201000114795)", Bank: "Union", AccNo: "0270201000114795", Balance: 12000, Owner: "Wife" },
         { AccountName: "Cash in Hand", Bank: "Cash", AccNo: "N/A", Balance: 8400, Owner: "Wife" },
         { AccountName: "ComBank (8010446177)", Bank: "Commercial Bank", AccNo: "8010446177", Balance: 185000, Owner: "Husband" },
         { AccountName: "BOC (6280350)", Bank: "BOC", AccNo: "6280350", Balance: 94000, Owner: "Husband" }
       ],
-      loans: [
-        { LoanName: "Credit Card", TargetAmount: 350000, PaidAmount: 45000, Remaining: 305000, Priority: "High" },
-        { LoanName: "Dad Loan", TargetAmount: 380000, PaidAmount: 60000, Remaining: 320000, Priority: "Medium" },
-        { LoanName: "Husband Loan", TargetAmount: 357000, PaidAmount: 120000, Remaining: 237000, Priority: "Medium" },
-        { LoanName: "Mom Loan", TargetAmount: 100000, PaidAmount: 30000, Remaining: 70000, Priority: "Low" }
-      ],
       recentTransactions: [
-        { ID: "TXN-01", Date: "2026-09-29 11:30:00", User: "Wife", Type: "Expense", Category: "Food & Groceries", Amount: 3850, Account: "HNB (Acc: 122020268397)", ReceiptUrl: "", Status: "Pending" },
+        { ID: "TXN-01", Date: "2026-09-29 11:30:00", User: "Wife", Type: "Expense", Category: "Food & Groceries", Amount: 3850, Account: "HNB (122020268397)", ReceiptUrl: "", Status: "Pending" },
         { ID: "TXN-02", Date: "2026-09-28 17:15:00", User: "Wife", Type: "Expense", Category: "Campus & Practicals", Amount: 2400, Account: "Cash in Hand", ReceiptUrl: "", Status: "Pending" },
-        { ID: "TXN-03", Date: "2026-09-27 19:40:00", User: "Wife", Type: "Expense", Category: "Rent & Utility Bills", Amount: 14500, Account: "Commercial Bank (Acc: 8020898065)", ReceiptUrl: "", Status: "Verified" },
+        { ID: "TXN-03", Date: "2026-09-27 19:40:00", User: "Wife", Type: "Expense", Category: "Rent & Utility Bills", Amount: 14500, Account: "Commercial Bank (8020898065)", ReceiptUrl: "", Status: "Verified" },
         { ID: "TXN-04", Date: "2026-09-26 14:10:00", User: "Wife", Type: "Expense", Category: "Transport", Amount: 1800, Account: "Cash in Hand", ReceiptUrl: "", Status: "Verified" },
-        { ID: "TXN-05", Date: "2026-09-25 10:00:00", User: "Wife", Type: "Expense", Category: "Loan Repayment", Amount: 15000, Account: "Commercial Bank (Acc: 8020898065)", ReceiptUrl: "", Status: "Verified" }
+        { ID: "TXN-05", Date: "2026-09-25 10:00:00", User: "Wife", Type: "Expense", Category: "Loan Repayment", Amount: 15000, Account: "Commercial Bank (8020898065)", ReceiptUrl: "", Status: "Verified" }
       ]
     };
 
     // ==========================================
-    // INITIALIZATION
+    // INITIALIZATION & LIFECYCLE
     // ==========================================
     document.addEventListener("DOMContentLoaded", () => {
-      setupUpliftingGreetings();
+      setupDatesAndAffirmations();
       setupAmountFormatter();
+      renderRoadmapAndGoals();
       renderRecentTransactions();
-      renderLoansProgress();
+      renderLoanCards();
+      renderGoalsCards();
       renderReconciliationTable();
       initCharts();
       fetchInitialData(false);
     });
 
-    function setupUpliftingGreetings() {
+    function setupDatesAndAffirmations() {
       const now = new Date();
-      const hour = now.getHours();
-      let greeting = "Good morning, my love 🌸";
-      if (hour >= 12 && hour < 17) greeting = "Good afternoon, my love ☀️";
-      else if (hour >= 17) greeting = "Good evening, my love 🌙";
-
-      document.getElementById("personalGreeting").textContent = greeting;
-      
-      // Random inspirational quote
-      const quote = loveQuotes[Math.floor(Math.random() * loveQuotes.length)];
-      document.getElementById("motivationalQuote").textContent = `"${quote}"`;
-
       const dateStr = now.toLocaleDateString('en-US', {
         weekday: 'short',
         month: 'short',
         day: 'numeric'
       });
-      document.getElementById("currentDateFormatted").textContent = dateStr;
-      document.getElementById("entryDateBadge").textContent = dateStr;
+      document.getElementById("todayDateStr").textContent = dateStr;
+      document.getElementById("currentDayBadge").textContent = dateStr;
+
+      // Pick rotating affirmation
+      const aff = affirmations[Math.floor(Math.random() * affirmations.length)];
+      document.getElementById("rotatingAffirmation").textContent = aff;
     }
 
     function setupAmountFormatter() {
@@ -1081,20 +967,20 @@
     function updateTypeTheme(type) {
       const submitBtn = document.getElementById("submitBtn");
       if (type === "Income") {
-        submitBtn.className = "w-full py-4 px-6 rounded-2xl font-bold text-white text-base tracking-wide bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-600 hover:to-teal-600 active:scale-[0.99] shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-70 disabled:pointer-events-none";
+        submitBtn.className = "w-full py-4 px-6 rounded-2xl font-bold text-white text-base tracking-wide bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-700 active:scale-[0.99] shadow-lg shadow-emerald-600/25 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-70 disabled:pointer-events-none";
       } else {
         submitBtn.className = "w-full py-4 px-6 rounded-2xl font-bold text-white text-base tracking-wide bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 hover:from-rose-600 hover:to-pink-600 active:scale-[0.99] shadow-lg shadow-rose-500/25 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-70 disabled:pointer-events-none";
       }
     }
 
     // ==========================================
-    // ROLE SYSTEM & PIN LOCK/UNLOCK
+    // DUAL ROLE & PIN CONTROLLER
     // ==========================================
     function handleLockToggle() {
       if (isHusband) {
         Swal.fire({
-          title: "Lock Admin View?",
-          text: "Returning to peaceful Wife Mode (Append-Only).",
+          title: "Lock Admin Dashboard?",
+          text: "Switching back to standard Wife Mode (Append-Only).",
           icon: "question",
           showCancelButton: true,
           confirmButtonColor: "#e11d48",
@@ -1168,8 +1054,8 @@
         closePinModal();
         setRole(true);
         Swal.fire({
-          title: "Husband Admin Unlocked!",
-          text: "Welcome back, Chief! Debt snowball, audit reconciliations & business modules are active.",
+          title: "Admin Unlocked!",
+          text: "Welcome back, Chief! Loan editor, goals config, and reconciliation tools are ready.",
           icon: "success",
           confirmButtonColor: "#2563eb",
           timer: 2200
@@ -1201,31 +1087,35 @@
       const lockButtonText = document.getElementById("lockButtonText");
       const adminNavTabs = document.getElementById("adminNavTabs");
       const headerTitle = document.getElementById("headerTitle");
+      const headerSubtext = document.getElementById("headerSubtext");
 
       if (isHusband) {
-        roleBadge.textContent = "Husband Admin";
+        roleBadge.textContent = "Admin Active";
         roleBadge.className = "text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-200/60";
         modeIconContainer.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 transition-all duration-300";
-        modeIcon.className = "fa-solid fa-user-tie text-lg";
+        modeIcon.className = "fa-solid fa-user-tie text-base";
         lockIcon.className = "fa-solid fa-lock-open text-blue-600";
         lockButtonText.textContent = "Lock Admin";
         adminNavTabs.classList.remove("hidden");
         headerTitle.textContent = "Family Finance Pro";
+        headerSubtext.textContent = "Husband management & audit mode";
         switchAdminTab("entry");
       } else {
         roleBadge.textContent = "Wife Mode";
         roleBadge.className = "text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200/60";
-        modeIconContainer.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 via-pink-500 to-amber-400 flex items-center justify-center text-white shadow-md shadow-rose-500/20 transition-all duration-300";
-        modeIcon.className = "fa-solid fa-heart text-lg animate-pulse";
+        modeIconContainer.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 transition-all duration-300";
+        modeIcon.className = "fa-solid fa-heart text-base animate-pulse";
         lockIcon.className = "fa-solid fa-lock text-rose-500";
         lockButtonText.textContent = "Admin Access";
         adminNavTabs.classList.add("hidden");
         headerTitle.textContent = "Our Future Journey";
-        
+        headerSubtext.textContent = "Append-only daily journal";
+
+        // Hide all admin tabs
         document.getElementById("section-entry").classList.remove("hidden");
-        document.getElementById("section-debts").classList.add("hidden");
+        document.getElementById("section-loans").classList.add("hidden");
+        document.getElementById("section-goals").classList.add("hidden");
         document.getElementById("section-business").classList.add("hidden");
-        document.getElementById("section-reconcile").classList.add("hidden");
       }
     }
 
@@ -1242,28 +1132,27 @@
       }
 
       document.getElementById("section-entry").classList.add("hidden");
-      document.getElementById("section-debts").classList.add("hidden");
+      document.getElementById("section-loans").classList.add("hidden");
+      document.getElementById("section-goals").classList.add("hidden");
       document.getElementById("section-business").classList.add("hidden");
-      document.getElementById("section-reconcile").classList.add("hidden");
 
       const target = document.getElementById(`section-${tab}`);
       if (target) target.classList.remove("hidden");
     }
 
-    // =========================================================================
-    // MOBILE FILE ATTACHMENT & CANVAS COMPRESSION (CRITICAL BUG FIX)
-    // =========================================================================
+    // ==========================================
+    // MOBILE FILE ATTACHMENT WITH CANVAS COMPRESSION
+    // ==========================================
     function handleImageSelection(event) {
       const file = event.target.files[0];
       if (!file) return;
 
       document.getElementById("receiptFileName").textContent = file.name.length > 22 ? file.name.substring(0, 20) + '...' : file.name;
 
-      // Efficient HTML5 Canvas downsampling before Base64 encoding
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         const img = new Image();
-        img.onload = function() {
+        img.onload = function () {
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
 
@@ -1283,11 +1172,9 @@
           canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Compress to JPEG at 0.72 quality
           const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.72);
           base64ReceiptString = compressedDataUrl;
 
-          // Thumbnail Preview
           const previewImg = document.getElementById("imagePreview");
           previewImg.src = compressedDataUrl;
           document.getElementById("imagePreviewContainer").classList.remove("hidden");
@@ -1325,9 +1212,9 @@
       const submitBtn = document.getElementById("submitBtn");
       const submitIcon = document.getElementById("submitIcon");
       const submitText = document.getElementById("submitText");
-      
+
       submitBtn.disabled = true;
-      submitIcon.className = "fa-solid fa-spinner fa-spin mr-1.5";
+      submitIcon.className = "fa-solid fa-spinner fa-spin mr-1";
       submitText.textContent = "Recording Transaction...";
 
       const payload = {
@@ -1362,7 +1249,6 @@
           throw new Error(result.message || "Failed to record transaction");
         }
 
-        // Add to local state
         const newRecord = {
           ID: (result.data && result.data.id) ? result.data.id : `TXN-${Date.now().toString().slice(-6)}`,
           Date: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }),
@@ -1376,27 +1262,24 @@
         };
         appState.recentTransactions.unshift(newRecord);
 
-        // Update charts and table
         renderRecentTransactions();
         updateCharts();
 
-        // Reset form
         document.getElementById("transactionForm").reset();
         clearImageSelection();
         document.getElementById("amountFormattedPreview").textContent = "";
 
         Swal.fire({
           icon: "success",
-          title: "Recorded with Love! 💕",
+          title: "Recorded Safely! 💕",
           text: `LKR ${amount.toLocaleString('en-LK', { minimumFractionDigits: 2 })} logged to Google Sheets with 'Pending' verification.`,
-          confirmButtonColor: "#f43f5e",
+          confirmButtonColor: "#059669",
           timer: 3500
         });
 
       } catch (err) {
         console.error("Submission error:", err);
-        
-        // Optimistic local add so work is never lost
+
         const fallbackRecord = {
           ID: `TXN-LOCAL-${Date.now().toString().slice(-4)}`,
           Date: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }),
@@ -1406,7 +1289,7 @@
           Amount: amount,
           Account: account,
           ReceiptUrl: base64ReceiptString ? "#preview" : "",
-          Status: "Pending (Offline Cached)"
+          Status: "Pending (Cached)"
         };
         appState.recentTransactions.unshift(fallbackRecord);
         renderRecentTransactions();
@@ -1415,7 +1298,7 @@
         Swal.fire({
           icon: "info",
           title: "Saved Locally 🌸",
-          text: "Saved to your device feed. Will sync to Google Sheets automatically.",
+          text: "Saved to your device feed. Will sync automatically upon reconnect.",
           confirmButtonColor: "#3b82f6"
         });
 
@@ -1423,322 +1306,329 @@
         clearImageSelection();
       } finally {
         submitBtn.disabled = false;
-        submitIcon.className = "fa-solid fa-heart mr-1.5";
+        submitIcon.className = "fa-solid fa-paper-plane mr-1";
         submitText.textContent = "Submit Transaction";
       }
     }
 
     // ==========================================
-    // CHART.JS INTERACTIVE VISUALIZATIONS
+    // 5A. EDITABLE LOAN MANAGER LOGIC (HUSBAND)
     // ==========================================
-    function initCharts() {
-      // 1. Expense Breakdown (Doughnut Chart)
-      const ctxExpense = document.getElementById("expenseBreakdownChart").getContext("2d");
-      expenseChartInstance = new Chart(ctxExpense, {
-        type: 'doughnut',
-        data: calculateExpenseDistribution(),
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '68%',
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                boxWidth: 10,
-                font: { size: 10, family: 'Plus Jakarta Sans', weight: '600' },
-                padding: 10
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const val = context.parsed || 0;
-                  return ` ${context.label}: LKR ${val.toLocaleString('en-LK')}`;
-                }
-              }
-            }
-          }
+    function renderLoanCards() {
+      const container = document.getElementById("loansCardsContainer");
+      if (!container) return;
+
+      container.innerHTML = appState.loans.map(loan => {
+        const target = Number(loan.TargetAmount) || 0;
+        const remaining = Number(loan.Remaining) || 0;
+        const paid = Math.max(0, target - remaining);
+        const percent = target > 0 ? Math.round((paid / target) * 100) : 0;
+
+        let priorityBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Medium</span>`;
+        if (loan.Priority === 'High') {
+          priorityBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-rose-500 text-white shadow-2xs">High Priority</span>`;
+        } else if (loan.Priority === 'Low') {
+          priorityBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Flexible</span>`;
         }
-      });
-
-      // 2. Debt Snowball Freedom Journey (Bar Chart)
-      const ctxDebt = document.getElementById("debtSnowballChart").getContext("2d");
-      debtChartInstance = new Chart(ctxDebt, {
-        type: 'bar',
-        data: calculateDebtDistribution(),
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              grid: { display: false },
-              ticks: { font: { size: 10, family: 'Plus Jakarta Sans', weight: '600' } }
-            },
-            y: {
-              grid: { color: '#f1f5f9' },
-              ticks: {
-                font: { size: 9 },
-                callback: function(val) {
-                  return (val / 1000) + 'k';
-                }
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                boxWidth: 10,
-                font: { size: 10, family: 'Plus Jakarta Sans', weight: '600' }
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return ` ${context.dataset.label}: LKR ${context.parsed.y.toLocaleString('en-LK')}`;
-                }
-              }
-            }
-          }
-        }
-      });
-    }
-
-    function calculateExpenseDistribution() {
-      const categoryTotals = {
-        'Food & Groceries': 0,
-        'Rent & Utility Bills': 0,
-        'Transport': 0,
-        'Campus & Practicals': 0,
-        'Loan Repayment': 0,
-        'Other': 0
-      };
-
-      appState.recentTransactions.forEach(t => {
-        if ((t.Type || 'Expense').toLowerCase() === 'expense') {
-          const amt = parseFloat(t.Amount) || 0;
-          if (categoryTotals.hasOwnProperty(t.Category)) {
-            categoryTotals[t.Category] += amt;
-          } else {
-            categoryTotals['Other'] += amt;
-          }
-        }
-      });
-
-      return {
-        labels: Object.keys(categoryTotals),
-        datasets: [{
-          data: Object.values(categoryTotals),
-          backgroundColor: [
-            '#f43f5e', // Rose
-            '#f59e0b', // Amber
-            '#3b82f6', // Blue
-            '#8b5cf6', // Violet
-            '#10b981', // Emerald
-            '#94a3b8'  // Slate
-          ],
-          borderWidth: 2,
-          borderColor: '#ffffff'
-        }]
-      };
-    }
-
-    function calculateDebtDistribution() {
-      const labels = appState.loans.map(l => l.LoanName);
-      const paidAmounts = appState.loans.map(l => Number(l.PaidAmount) || 0);
-      const remainingAmounts = appState.loans.map(l => Number(l.Remaining) || 0);
-
-      return {
-        labels: labels,
-        datasets: [
-          {
-            label: 'Paid Off',
-            data: paidAmounts,
-            backgroundColor: '#10b981',
-            borderRadius: 6
-          },
-          {
-            label: 'Remaining Debt',
-            data: remainingAmounts,
-            backgroundColor: '#f43f5e',
-            borderRadius: 6
-          }
-        ]
-      };
-    }
-
-    function updateCharts() {
-      if (expenseChartInstance) {
-        expenseChartInstance.data = calculateExpenseDistribution();
-        expenseChartInstance.update();
-      }
-      if (debtChartInstance) {
-        debtChartInstance.data = calculateDebtDistribution();
-        debtChartInstance.update();
-      }
-    }
-
-    // ==========================================
-    // DATA FETCHING & RENDERING
-    // ==========================================
-    async function fetchInitialData(isManualSync = false) {
-      const refreshIcon = document.getElementById("refreshIcon");
-      if (refreshIcon) refreshIcon.classList.add("fa-spin");
-
-      try {
-        const response = await fetch(`${API_URL}?limit=35`, {
-          method: "GET",
-          headers: { "Accept": "application/json" }
-        });
-
-        if (!response.ok) throw new Error("HTTP error " + response.status);
-        const data = await response.json();
-
-        if (data && data.status === "success" && data.data) {
-          if (data.data.accounts && data.data.accounts.length > 0) {
-            appState.accounts = data.data.accounts;
-          }
-          if (data.data.loans && data.data.loans.length > 0) {
-            appState.loans = data.data.loans;
-          }
-          if (data.data.recentTransactions && data.data.recentTransactions.length > 0) {
-            appState.recentTransactions = data.data.recentTransactions;
-          }
-
-          renderRecentTransactions();
-          renderLoansProgress();
-          renderReconciliationTable();
-          updateCharts();
-
-          if (isManualSync) {
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: 'Live Synced with Google Sheets',
-              showConfirmButton: false,
-              timer: 2000
-            });
-          }
-        }
-      } catch (err) {
-        console.warn("Using offline / initial dataset:", err);
-        renderRecentTransactions();
-        renderLoansProgress();
-        renderReconciliationTable();
-        updateCharts();
-
-        if (isManualSync) {
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'info',
-            title: 'Showing cached financial data',
-            showConfirmButton: false,
-            timer: 2000
-          });
-        }
-      } finally {
-        if (refreshIcon) refreshIcon.classList.remove("fa-spin");
-      }
-    }
-
-    // Render Recent Submissions Feed (Strictly Read-Only Append Feed for Wife View)
-    function renderRecentTransactions() {
-      const container = document.getElementById("submissionsList");
-      const badge = document.getElementById("submissionCountBadge");
-      const list = appState.recentTransactions;
-
-      badge.textContent = `${list.length} ${list.length === 1 ? 'entry' : 'entries'}`;
-
-      if (list.length === 0) {
-        container.innerHTML = `
-          <div class="py-8 text-center text-slate-400">
-            <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-300"></i>
-            <p class="text-xs">No transactions recorded yet today.</p>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = list.map((item) => {
-        const isExpense = (item.Type || "Expense").toLowerCase() === "expense";
-        const amt = parseFloat(item.Amount) || 0;
-        const formattedAmt = amt.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const hasReceipt = item.ReceiptUrl && item.ReceiptUrl !== "" && item.ReceiptUrl !== "Upload Failed";
-
-        let catIcon = "fa-tag";
-        if (item.Category?.includes("Food")) catIcon = "fa-burger";
-        else if (item.Category?.includes("Bills") || item.Category?.includes("Rent")) catIcon = "fa-lightbulb";
-        else if (item.Category?.includes("Transport")) catIcon = "fa-car";
-        else if (item.Category?.includes("Campus")) catIcon = "fa-graduation-cap";
-        else if (item.Category?.includes("Medical")) catIcon = "fa-pills";
-        else if (item.Category?.includes("Loan")) catIcon = "fa-credit-card";
 
         return `
-          <div class="p-3.5 sm:p-4 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors flex items-center justify-between gap-3">
-            <div class="flex items-center space-x-3 min-w-0">
-              <div class="w-10 h-10 rounded-xl ${isExpense ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'} flex items-center justify-center font-bold text-sm shrink-0">
-                <i class="fa-solid ${catIcon}"></i>
+          <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm relative overflow-hidden">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest">${loan.id}</span>
+                <h4 class="font-extrabold text-slate-900 text-base">${loan.LoanName}</h4>
               </div>
-              <div class="truncate">
-                <div class="flex items-center space-x-2">
-                  <h4 class="font-bold text-slate-900 text-sm truncate">${item.Category || 'General'}</h4>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/50">
-                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.2 animate-pulse"></span>
-                    ${item.Status || 'Pending Verification'}
-                  </span>
-                </div>
-                <p class="text-xs text-slate-500 truncate mt-0.5">
-                  <span>${item.Account || 'Cash'}</span> • <span class="text-slate-400">${item.Date || 'Today'}</span>
-                </p>
+              ${priorityBadge}
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2">
+              <div>
+                <p class="text-[11px] font-bold uppercase text-slate-400">Target</p>
+                <p class="text-base font-extrabold text-slate-800">LKR ${target.toLocaleString('en-LK')}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-[11px] font-bold uppercase text-slate-400">Remaining</p>
+                <p class="text-base font-extrabold text-rose-600">LKR ${remaining.toLocaleString('en-LK')}</p>
               </div>
             </div>
 
-            <div class="text-right shrink-0">
-              <p class="font-extrabold text-sm sm:text-base ${isExpense ? 'text-slate-900' : 'text-emerald-600'}">
-                ${isExpense ? '-' : '+'} LKR ${formattedAmt}
-              </p>
-              ${hasReceipt ? `
-                <button onclick="viewReceiptModal('${item.ReceiptUrl}')" class="mt-1 text-[11px] font-semibold text-rose-600 hover:text-rose-800 flex items-center justify-end space-x-1 ml-auto transition-colors">
-                  <i class="fa-solid fa-paperclip"></i>
-                  <span>View Bill</span>
-                </button>
-              ` : `
-                <span class="text-[10px] text-slate-300">No Receipt</span>
-              `}
+            <div class="mt-3">
+              <div class="flex justify-between text-xs text-slate-500 font-semibold mb-1">
+                <span>Paid: LKR ${paid.toLocaleString('en-LK')}</span>
+                <span>${percent}%</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+              </div>
             </div>
           </div>
         `;
       }).join('');
     }
 
-    // Render Debt Snowball Progress
-    function renderLoansProgress() {
+    function openEditLoansModal() {
+      const container = document.getElementById("editLoansInputsContainer");
+      container.innerHTML = appState.loans.map(loan => {
+        return `
+          <div class="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50">
+            <div class="flex justify-between items-center mb-1.5">
+              <span class="font-bold text-xs text-slate-900">${loan.LoanName} (${loan.id})</span>
+              <span class="text-[11px] text-slate-500">Target: LKR ${Number(loan.TargetAmount).toLocaleString('en-LK')}</span>
+            </div>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-bold text-slate-400">Rs.</span>
+              <input
+                type="number"
+                step="1"
+                min="0"
+                max="${loan.TargetAmount}"
+                id="editLoanRemaining-${loan.id}"
+                value="${loan.Remaining}"
+                required
+                class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:outline-hidden focus:border-blue-500"
+              />
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById("editLoansModal").classList.remove("hidden");
+    }
+
+    function closeEditLoansModal() {
+      document.getElementById("editLoansModal").classList.add("hidden");
+    }
+
+    async function handleSaveLoans(event) {
+      event.preventDefault();
+
+      const saveBtn = document.getElementById("saveLoansBtn");
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving...";
+
+      const updatedLoansPayload = appState.loans.map(loan => {
+        const inputVal = parseFloat(document.getElementById(`editLoanRemaining-${loan.id}`).value) || 0;
+        return {
+          id: loan.id,
+          name: loan.LoanName,
+          remaining: inputVal
+        };
+      });
+
+      // Update local state
+      appState.loans.forEach(loan => {
+        const found = updatedLoansPayload.find(u => u.id === loan.id);
+        if (found) {
+          loan.Remaining = found.remaining;
+          loan.PaidAmount = Math.max(0, loan.TargetAmount - found.remaining);
+        }
+      });
+
+      renderRoadmapAndGoals();
+      renderLoanCards();
+      updateCharts();
+      closeEditLoansModal();
+
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "updateLoans",
+            loans: updatedLoansPayload
+          })
+        });
+
+        Swal.fire({
+          icon: "success",
+          title: "Loans Updated!",
+          text: "Loan balances have been synchronized with Google Sheets.",
+          confirmButtonColor: "#2563eb",
+          timer: 2500
+        });
+      } catch (err) {
+        console.warn("Backend update error:", err);
+        Swal.fire("Saved Locally", "Loan balances updated in view and cached locally.", "info");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Changes";
+      }
+    }
+
+    // ==========================================
+    // 5B. EDITABLE GOALS MANAGER LOGIC (HUSBAND)
+    // ==========================================
+    function renderGoalsCards() {
+      const container = document.getElementById("goalsCardsContainer");
+      if (!container) return;
+
+      container.innerHTML = appState.goals.map(g => {
+        const target = Number(g.TargetAmount) || 0;
+        const saved = Number(g.SavedAmount) || 0;
+        const percent = target > 0 ? Math.round((saved / target) * 100) : 0;
+        const needed = Math.max(0, target - saved);
+
+        return `
+          <div class="bg-white rounded-3xl p-5 sm:p-6 border border-amber-100 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2.5">
+                <span class="text-2xl">${g.Icon}</span>
+                <div>
+                  <h4 class="font-extrabold text-slate-900 text-base">${g.GoalName}</h4>
+                  <p class="text-[11px] text-slate-500">Target: LKR ${target.toLocaleString('en-LK')}</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-500 text-white shadow-xs">
+                ${percent}%
+              </span>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="w-full bg-amber-100/70 rounded-full h-3 overflow-hidden p-0.5">
+                <div class="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-700" style="width: ${percent}%"></div>
+              </div>
+              <div class="flex justify-between text-xs font-semibold text-slate-600">
+                <span>Saved: LKR ${saved.toLocaleString('en-LK')}</span>
+                <span class="text-amber-700">Needed: LKR ${needed.toLocaleString('en-LK')}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openConfigureGoalsModal() {
+      const container = document.getElementById("editGoalsInputsContainer");
+      container.innerHTML = appState.goals.map(g => {
+        return `
+          <div class="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-lg">${g.Icon}</span>
+              <span class="font-bold text-xs text-slate-900">${g.GoalName} (${g.id})</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Target Amount (LKR)</label>
+                <input
+                  type="number"
+                  step="1000"
+                  id="editGoalTarget-${g.id}"
+                  value="${g.TargetAmount}"
+                  required
+                  class="w-full p-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:outline-hidden focus:border-amber-500"
+                />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Current Saved (LKR)</label>
+                <input
+                  type="number"
+                  step="1000"
+                  id="editGoalSaved-${g.id}"
+                  value="${g.SavedAmount}"
+                  required
+                  class="w-full p-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:outline-hidden focus:border-amber-500"
+                />
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById("editGoalsModal").classList.remove("hidden");
+    }
+
+    function closeConfigureGoalsModal() {
+      document.getElementById("editGoalsModal").classList.add("hidden");
+    }
+
+    async function handleSaveGoals(event) {
+      event.preventDefault();
+
+      const saveBtn = document.getElementById("saveGoalsBtn");
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving...";
+
+      const updatedGoalsPayload = appState.goals.map(g => {
+        const target = parseFloat(document.getElementById(`editGoalTarget-${g.id}`).value) || 0;
+        const saved = parseFloat(document.getElementById(`editGoalSaved-${g.id}`).value) || 0;
+        return {
+          id: g.id,
+          target: target,
+          saved: saved
+        };
+      });
+
+      appState.goals.forEach(g => {
+        const found = updatedGoalsPayload.find(u => u.id === g.id);
+        if (found) {
+          g.TargetAmount = found.target;
+          g.SavedAmount = found.saved;
+        }
+      });
+
+      renderRoadmapAndGoals();
+      renderGoalsCards();
+      closeConfigureGoalsModal();
+
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "updateGoals",
+            goals: updatedGoalsPayload
+          })
+        });
+
+        Swal.fire({
+          icon: "success",
+          title: "Goals Updated!",
+          text: "Future wedding and home goals configured successfully.",
+          confirmButtonColor: "#d97706",
+          timer: 2500
+        });
+      } catch (err) {
+        console.warn("Goals update error:", err);
+        Swal.fire("Saved Locally", "Goals configured locally in your browser session.", "info");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Goals";
+      }
+    }
+
+    // ==========================================
+    // ROADMAP & RECONCILIATION HELPERS
+    // ==========================================
+    function renderRoadmapAndGoals() {
       let totalTarget = 0;
-      let totalPaid = 0;
+      let totalRemaining = 0;
 
       appState.loans.forEach(loan => {
         totalTarget += Number(loan.TargetAmount) || 0;
-        totalPaid += Number(loan.PaidAmount) || 0;
+        totalRemaining += Number(loan.Remaining) || 0;
       });
 
-      const totalRemaining = Math.max(0, totalTarget - totalPaid);
-      const overallPercent = totalTarget > 0 ? Math.round((totalPaid / totalTarget) * 100) : 0;
+      const totalPaid = Math.max(0, totalTarget - totalRemaining);
+      const percent = totalTarget > 0 ? Math.round((totalPaid / totalTarget) * 100) : 0;
 
-      const remainingEl = document.getElementById("debtTotalRemainingDisplay");
-      const settledEl = document.getElementById("debtTotalSettledDisplay");
-      const barEl = document.getElementById("overallDebtProgressBar");
-      const celebrationEl = document.getElementById("celebratoryBadgeText");
+      document.getElementById("phase1PercentBadge").textContent = `${percent}% Cleared`;
+      document.getElementById("phase1ProgressBar").style.width = `${percent}%`;
+      document.getElementById("phase1PaidText").textContent = `Paid: LKR ${totalPaid.toLocaleString('en-LK')}`;
+      document.getElementById("phase1RemainingText").textContent = `Remaining: LKR ${totalRemaining.toLocaleString('en-LK')}`;
+      document.getElementById("debtSummaryBadge").textContent = `LKR ${(totalPaid / 1000).toFixed(0)}k Settled So Far`;
 
-      if (remainingEl) remainingEl.textContent = `LKR ${totalRemaining.toLocaleString('en-LK')}`;
-      if (settledEl) settledEl.textContent = `LKR ${totalPaid.toLocaleString('en-LK')} (${overallPercent}%)`;
-      if (barEl) barEl.style.width = `${overallPercent}%`;
-      if (celebrationEl) celebrationEl.textContent = `LKR ${totalPaid.toLocaleString('en-LK')} Cleared So Far!`;
+      // Mini goals in header
+      const weddingGoal = appState.goals.find(g => g.id === "G01");
+      const homeGoal = appState.goals.find(g => g.id === "G02");
+
+      if (weddingGoal) {
+        document.getElementById("miniWeddingSaved").textContent = `LKR ${weddingGoal.SavedAmount.toLocaleString('en-LK')} / ${(weddingGoal.TargetAmount / 1000000).toFixed(1)}M`;
+      }
+      if (homeGoal) {
+        document.getElementById("miniHomeSaved").textContent = `LKR ${homeGoal.SavedAmount.toLocaleString('en-LK')} / ${(homeGoal.TargetAmount / 1000000).toFixed(1)}M`;
+      }
     }
 
-    // Render Reconciliation Table (Husband Mode Section C)
     function renderReconciliationTable() {
       const tbody = document.getElementById("reconcileTableBody");
       if (!tbody) return;
@@ -1748,7 +1638,6 @@
         return `
           <tr class="hover:bg-slate-50/80">
             <td class="py-3 px-3 font-bold text-slate-900">${acc.AccountName}</td>
-            <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${acc.Owner === 'Husband' ? 'bg-blue-50 text-blue-700' : 'bg-rose-50 text-rose-700'}">${acc.Owner}</span></td>
             <td class="py-3 px-3 font-semibold text-slate-900">LKR ${expected.toLocaleString('en-LK', { minimumFractionDigits: 2 })}</td>
             <td class="py-3 px-3">
               <input
@@ -1807,7 +1696,7 @@
         toast: true,
         position: 'top-end',
         icon: 'success',
-        title: 'Reconciliation Audit Ran',
+        title: 'Variances Calculated',
         showConfirmButton: false,
         timer: 1500
       });
@@ -1820,12 +1709,307 @@
         icon: "info",
         showCancelButton: true,
         confirmButtonColor: "#059669",
-        confirmButtonText: "Confirm & Log"
+        confirmButtonText: "Confirm Audit"
       }).then((result) => {
         if (result.isConfirmed) {
           Swal.fire("Verified!", "Monthly balance reconciliation confirmed successfully.", "success");
         }
       });
+    }
+
+    // ==========================================
+    // CHART.JS CHARTS
+    // ==========================================
+    function initCharts() {
+      // 1. Expense Breakdown (Doughnut)
+      const ctxExpense = document.getElementById("expenseBreakdownChart").getContext("2d");
+      expenseChartInstance = new Chart(ctxExpense, {
+        type: 'doughnut',
+        data: calculateExpenseDistribution(),
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '68%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                boxWidth: 10,
+                font: { size: 10, family: 'Plus Jakarta Sans', weight: '600' },
+                padding: 10
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return ` ${context.label}: LKR ${context.parsed.toLocaleString('en-LK')}`;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // 2. Debt Freedom Journey (Horizontal Bar)
+      const ctxDebt = document.getElementById("debtSnowballChart").getContext("2d");
+      debtChartInstance = new Chart(ctxDebt, {
+        type: 'bar',
+        data: calculateDebtDistribution(),
+        options: {
+          indexAxis: 'y', // Horizontal bars
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              stacked: true,
+              grid: { color: '#f1f5f9' },
+              ticks: {
+                font: { size: 9 },
+                callback: function (val) { return (val / 1000) + 'k'; }
+              }
+            },
+            y: {
+              stacked: true,
+              grid: { display: false },
+              ticks: { font: { size: 10, family: 'Plus Jakarta Sans', weight: '600' } }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 10, font: { size: 10, family: 'Plus Jakarta Sans', weight: '600' } }
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return ` ${context.dataset.label}: LKR ${context.parsed.x.toLocaleString('en-LK')}`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function calculateExpenseDistribution() {
+      const categoryTotals = {
+        'Food & Groceries': 0,
+        'Rent & Utility Bills': 0,
+        'Transport': 0,
+        'Campus & Practicals': 0,
+        'Loan Repayment': 0,
+        'Other': 0
+      };
+
+      appState.recentTransactions.forEach(t => {
+        if ((t.Type || 'Expense').toLowerCase() === 'expense') {
+          const amt = parseFloat(t.Amount) || 0;
+          if (categoryTotals.hasOwnProperty(t.Category)) {
+            categoryTotals[t.Category] += amt;
+          } else {
+            categoryTotals['Other'] += amt;
+          }
+        }
+      });
+
+      return {
+        labels: Object.keys(categoryTotals),
+        datasets: [{
+          data: Object.values(categoryTotals),
+          backgroundColor: [
+            '#f43f5e', // Food (Rose)
+            '#f59e0b', // Bills (Amber)
+            '#3b82f6', // Transport (Blue)
+            '#8b5cf6', // Campus (Violet)
+            '#10b981', // Loan (Emerald)
+            '#94a3b8'  // Other (Slate)
+          ],
+          borderWidth: 2,
+          borderColor: '#ffffff'
+        }]
+      };
+    }
+
+    function calculateDebtDistribution() {
+      const labels = appState.loans.map(l => l.LoanName);
+      const paidAmounts = appState.loans.map(l => Number(l.PaidAmount) || 0);
+      const remainingAmounts = appState.loans.map(l => Number(l.Remaining) || 0);
+
+      return {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Paid Off',
+            data: paidAmounts,
+            backgroundColor: '#10b981',
+            borderRadius: 4
+          },
+          {
+            label: 'Remaining',
+            data: remainingAmounts,
+            backgroundColor: '#f43f5e',
+            borderRadius: 4
+          }
+        ]
+      };
+    }
+
+    function updateCharts() {
+      if (expenseChartInstance) {
+        expenseChartInstance.data = calculateExpenseDistribution();
+        expenseChartInstance.update();
+      }
+      if (debtChartInstance) {
+        debtChartInstance.data = calculateDebtDistribution();
+        debtChartInstance.update();
+      }
+    }
+
+    // ==========================================
+    // RECENT SUBMISSIONS FEED RENDERING
+    // ==========================================
+    function renderRecentTransactions() {
+      const container = document.getElementById("submissionsList");
+      const badge = document.getElementById("submissionCountBadge");
+      const list = appState.recentTransactions;
+
+      badge.textContent = `${list.length} ${list.length === 1 ? 'entry' : 'entries'}`;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="py-8 text-center text-slate-400">
+            <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-300"></i>
+            <p class="text-xs">No transactions recorded yet today.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map((item) => {
+        const isExpense = (item.Type || "Expense").toLowerCase() === "expense";
+        const amt = parseFloat(item.Amount) || 0;
+        const formattedAmt = amt.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const hasReceipt = item.ReceiptUrl && item.ReceiptUrl !== "" && item.ReceiptUrl !== "Upload Failed";
+
+        let catIcon = "fa-tag";
+        if (item.Category?.includes("Food")) catIcon = "fa-burger";
+        else if (item.Category?.includes("Bills") || item.Category?.includes("Rent")) catIcon = "fa-lightbulb";
+        else if (item.Category?.includes("Transport")) catIcon = "fa-car";
+        else if (item.Category?.includes("Campus")) catIcon = "fa-graduation-cap";
+        else if (item.Category?.includes("Loan")) catIcon = "fa-credit-card";
+
+        return `
+          <div class="p-3.5 sm:p-4 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 min-w-0">
+              <div class="w-10 h-10 rounded-xl ${isExpense ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'} flex items-center justify-center font-bold text-sm shrink-0">
+                <i class="fa-solid ${catIcon}"></i>
+              </div>
+              <div class="truncate">
+                <div class="flex items-center space-x-2">
+                  <h4 class="font-bold text-slate-900 text-sm truncate">${item.Category || 'General'}</h4>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/50">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1 animate-pulse"></span>
+                    ${item.Status || 'Pending Verification'}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 truncate mt-0.5">
+                  <span>${item.Account || 'Cash'}</span> • <span class="text-slate-400">${item.Date || 'Today'}</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="text-right shrink-0">
+              <p class="font-extrabold text-sm sm:text-base ${isExpense ? 'text-slate-900' : 'text-emerald-600'}">
+                ${isExpense ? '-' : '+'} LKR ${formattedAmt}
+              </p>
+              ${hasReceipt ? `
+                <button onclick="viewReceiptModal('${item.ReceiptUrl}')" class="mt-1 text-[11px] font-semibold text-emerald-600 hover:text-emerald-800 flex items-center justify-end space-x-1 ml-auto transition-colors">
+                  <i class="fa-solid fa-paperclip"></i>
+                  <span>View Bill</span>
+                </button>
+              ` : `
+                <span class="text-[10px] text-slate-300">No Receipt</span>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // DATA FETCHING (GET REQUEST)
+    // ==========================================
+    async function fetchInitialData(isManualSync = false) {
+      const refreshIcon = document.getElementById("refreshIcon");
+      if (refreshIcon) refreshIcon.classList.add("fa-spin");
+
+      try {
+        const response = await fetch(`${API_URL}?limit=35`, {
+          method: "GET",
+          headers: { "Accept": "application/json" }
+        });
+
+        if (!response.ok) throw new Error("HTTP error " + response.status);
+        const data = await response.json();
+
+        if (data && data.status === "success" && data.data) {
+          if (data.data.accounts && data.data.accounts.length > 0) {
+            appState.accounts = data.data.accounts;
+          }
+          if (data.data.loans && data.data.loans.length > 0) {
+            // Merge with local structure while preserving IDs
+            data.data.loans.forEach((serverLoan, index) => {
+              if (appState.loans[index]) {
+                appState.loans[index].TargetAmount = Number(serverLoan.TargetAmount) || appState.loans[index].TargetAmount;
+                appState.loans[index].PaidAmount = Number(serverLoan.PaidAmount) || appState.loans[index].PaidAmount;
+                appState.loans[index].Remaining = Number(serverLoan.Remaining) || appState.loans[index].Remaining;
+              }
+            });
+          }
+          if (data.data.recentTransactions && data.data.recentTransactions.length > 0) {
+            appState.recentTransactions = data.data.recentTransactions;
+          }
+
+          renderRoadmapAndGoals();
+          renderRecentTransactions();
+          renderLoanCards();
+          renderGoalsCards();
+          renderReconciliationTable();
+          updateCharts();
+
+          if (isManualSync) {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Live Synced with Google Sheets',
+              showConfirmButton: false,
+              timer: 2000
+            });
+          }
+        }
+      } catch (err) {
+        console.warn("Using offline fallback state:", err);
+        renderRoadmapAndGoals();
+        renderRecentTransactions();
+        renderLoanCards();
+        renderGoalsCards();
+        renderReconciliationTable();
+        updateCharts();
+
+        if (isManualSync) {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'info',
+            title: 'Showing cached offline records',
+            showConfirmButton: false,
+            timer: 2000
+          });
+        }
+      } finally {
+        if (refreshIcon) refreshIcon.classList.remove("fa-spin");
+      }
     }
 
     // ==========================================
@@ -1853,4 +2037,5 @@
     }
   </script>
 </body>
+
 </html>
